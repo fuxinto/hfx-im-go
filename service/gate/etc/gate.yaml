@@ -1,0 +1,14 @@
+Name: gate.rpc
+ListenOn: :8080
+Etcd:
+  Hosts:
+  - :2379
+  Key: gate.rpc
+RouteRpcConf:
+  Etcd:
+    Hosts:
+      - :2379
+    Key: route.rpc
+SocketConf:
+  Port: :8090
+  MaxConnCount: 100000

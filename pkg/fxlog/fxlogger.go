@@ -1,6 +1,7 @@
 package fxlog
 
 import (
+	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -8,8 +9,35 @@ import (
 	"time"
 )
 
+var fxlog *zap.Logger
+
+func Infof(format string, v ...interface{}) {
+	Info(fmt.Sprintf(format, v...))
+}
+func Info(msg string, fields ...zap.Field) {
+	fxlog.Info(msg, fields...)
+
+}
+
+func Warn(msg string, fields ...zap.Field) {
+	fxlog.Warn(msg, fields...)
+}
+
+func Error(msg string, fields ...zap.Field) {
+	fxlog.Error(msg, fields...)
+
+}
+
+func Panic(msg string, fields ...zap.Field) {
+	fxlog.Panic(msg, fields...)
+}
+
+func Fatal(msg string, fields ...zap.Field) {
+	fxlog.Fatal(msg, fields...)
+}
+
 /*log路径文件名*/
-func Initlog(pathName, serviceName string) *zap.Logger {
+func Initlog(pathName, serviceName string) {
 
 	hook := lumberjack.Logger{
 		Filename:   pathName,
@@ -40,7 +68,7 @@ func Initlog(pathName, serviceName string) *zap.Logger {
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(encoderConfig),                                           // 编码器配置
 		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)), // 打印到控制台和文件
-		atomicLevel,                                                                     // 日志级别
+		atomicLevel, // 日志级别
 	)
 
 	// 开启开发模式，堆栈跟踪
@@ -50,7 +78,7 @@ func Initlog(pathName, serviceName string) *zap.Logger {
 	// 设置初始化字段
 	filed := zap.Fields(zap.String("serviceName", serviceName))
 	// 构造日志
-	return zap.New(core, caller, development, filed)
+	fxlog = zap.New(core, caller, development, filed)
 }
 
 func customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {

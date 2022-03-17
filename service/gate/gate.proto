@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+
+package gateClient;
+option go_package = "./gateClient";
+
+message MessagePushReq{
+  string  channelId = 1;
+  bytes   message = 2;
+}
+message MessagePushReply{
+
+}
+
+message MessageAckReq {
+  string msgUid = 1;
+}
+
+message MessageAckReply{
+
+}
+
+service gate {
+  rpc RoutePushMsg(MessagePushReq) returns(MessagePushReply);
+  rpc RouteMsgAck(MessageAckReq) returns(MessageAckReply);
+}

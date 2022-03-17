@@ -1,7 +1,0 @@
-
-Log:
-  PathName: './log/connect.log'
-  ServiceName: 'gate'
-Server:
-  Port: ':8090'
-  MaxConnCount: 100000

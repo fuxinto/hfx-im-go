@@ -1,0 +1,11 @@
+Name: route.rpc
+ListenOn: :8081
+Etcd:
+  Hosts:
+    - :2379
+  Key: 'route.rpc'
+
+RedisConf:
+  - Host: 124.71.100.133:6379
+    Type: node
+    Pass: hfx950820

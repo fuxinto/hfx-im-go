@@ -1,9 +1,0 @@
-syntax = "proto3";
-import "rpc.proto";
-
-package gatek;
-option go_package = "gatek";
-
-service gate {
-  rpc RoutePushMsg(rpc.MessagePushReq) returns(rpc.MessagePushReply);
-}

@@ -1,0 +1,12 @@
+
+Log:
+  PathName: './log/gate.log'
+
+Server:
+  Port: ':8090'
+  MaxConnCount: 100000
+  Name: 'gate'
+
+RouteRpcConfig:
+  Addr: ':8888'
+  Name: 'route'
