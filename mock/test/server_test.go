@@ -1,7 +1,7 @@
 package test
 
 import (
-	"HFXIM/mock"
+	"HIMGo/mock"
 	"testing"
 )
 

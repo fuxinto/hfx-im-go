@@ -12,15 +12,10 @@ type Body struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-func Response(w http.ResponseWriter, data interface{}, code int) {
+func Response(w http.ResponseWriter, data interface{}) {
 	var body Body
-	body.Code = code
-	if code == 200 {
-		body.Msg = "ok"
-		body.Data = data
-	} else {
-		body.Msg = "fail"
-		body.Data = nil
-	}
+	body.Code = 200
+	body.Msg = "ok"
+	body.Data = data
 	httpx.OkJson(w, body)
 }

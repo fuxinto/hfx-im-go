@@ -1,9 +1,9 @@
 package mock
 
 import (
-	"HFXIM/service/gate/him"
-	"HFXIM/service/gate/him/tcp"
-	"HFXIM/service/gate/him/websocket"
+	"HIMGo/service/gate/socket"
+	"HIMGo/service/gate/socket/tcp"
+	"HIMGo/service/gate/socket/websocket"
 	"fmt"
 	"github.com/segmentio/ksuid"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,7 +18,7 @@ func (s *ServerDemo) Start(protocol, addr string) {
 	//	_ = http.ListenAndServe("0.0.0.0:6060", nil)
 	//}()
 
-	var srv him.Server
+	var srv socket.Server
 	if protocol == "ws" {
 		srv = websocket.NewServer(addr)
 	} else if protocol == "tcp" {
@@ -43,7 +43,7 @@ type ServerHandler struct {
 }
 
 // Accept this connection
-func (h *ServerHandler) Accept(conn him.Conn, timeout time.Duration) (string, him.Meta, error) {
+func (h *ServerHandler) Accept(conn socket.Conn, timeout time.Duration) (string, socket.Meta, error) {
 	// 1. 读取登录包
 	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 	frame, err := conn.ReadFrame()
@@ -60,12 +60,12 @@ func (h *ServerHandler) Accept(conn him.Conn, timeout time.Duration) (string, hi
 	//	return "", fmt.Errorf("read Not LoginReq")
 	//}
 	logx.Infof(string(frame.GetPayload()))
-	conn.WriteFrame(him.OpBinary, []byte("登录成功"))
+	conn.WriteFrame(socket.OpBinary, []byte("登录成功"))
 	return ksuid.New().String(), nil, nil
 }
 
 // Receive default listener
-func (h *ServerHandler) Receive(ag him.Agent, payload []byte) {
+func (h *ServerHandler) Receive(ag socket.Agent, payload []byte) {
 	str := fmt.Sprintf("收到消息：", string(payload))
 	_ = ag.Push([]byte(str))
 

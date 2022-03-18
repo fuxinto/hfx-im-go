@@ -1,10 +1,10 @@
 package mock
 
 import (
-	"HFXIM/common/HIM"
-	"HFXIM/service/gate/him"
-	"HFXIM/service/gate/him/tcp"
-	"HFXIM/service/gate/him/websocket"
+	"HIMGo/pkg/pb"
+	"HIMGo/service/gate/socket"
+	"HIMGo/service/gate/socket/tcp"
+	"HIMGo/service/gate/socket/websocket"
 	"context"
 	"github.com/gobwas/ws"
 	"github.com/golang/protobuf/proto"
@@ -18,7 +18,7 @@ type ClientDemo struct {
 }
 
 func (c *ClientDemo) Start(userID, protocol, addr string) {
-	var cli him.Client
+	var cli socket.Client
 
 	// step1: 初始化客户端
 	if protocol == "ws" {
@@ -35,12 +35,12 @@ func (c *ClientDemo) Start(userID, protocol, addr string) {
 	if err != nil {
 		logx.Error(err)
 	}
-	data, err := proto.Marshal(&HIM.LoginReq{Token: "测试服务token"})
+	data, err := proto.Marshal(&pb.LoginReq{Token: "测试服务token"})
 	if err != nil {
 		logx.Error(err)
 	}
-	pack := &HIM.Pack{
-		Type: HIM.Pack_loginReq,
+	pack := &pb.Pack{
+		Type: pb.Pack_loginReq,
 		Body: data,
 	}
 	data, err = proto.Marshal(pack)
@@ -71,7 +71,7 @@ func (c *ClientDemo) Start(userID, protocol, addr string) {
 			break
 		}
 
-		if frame.GetOpCode() != him.OpBinary {
+		if frame.GetOpCode() != socket.OpBinary {
 			continue
 		}
 		//recv++
@@ -89,7 +89,7 @@ type WebsocketDialer struct {
 }
 
 // DialAndHandshake DialAndHandshake
-func (d *WebsocketDialer) DialAndHandshake(ctx him.DialerContext) (net.Conn, error) {
+func (d *WebsocketDialer) DialAndHandshake(ctx socket.DialerContext) (net.Conn, error) {
 	// 1 调用ws.Dial拨号
 	conn, _, _, err := ws.Dial(context.TODO(), ctx.Address)
 	if err != nil {
@@ -109,7 +109,7 @@ type TCPDialer struct {
 }
 
 // DialAndHandshake DialAndHandshake
-func (d *TCPDialer) DialAndHandshake(ctx him.DialerContext) (net.Conn, error) {
+func (d *TCPDialer) DialAndHandshake(ctx socket.DialerContext) (net.Conn, error) {
 	logx.Info("start dial: ", ctx.Address)
 	// 1 调用net.Dial拨号
 	conn, err := net.Dial("tcp", ctx.Address)
