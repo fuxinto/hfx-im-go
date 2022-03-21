@@ -2,15 +2,37 @@ syntax = "proto3";
 
 package pb;
 option go_package = "./pb";
+
+enum MessageStatus {
+	init = 0;
+	sending = 1;
+	sendSucc = 2;
+	sendFail = 3;
+	hasDeleted = 4;
+	localImported = 5;
+	localRevoked = 6;
+}
+enum PackType{
+	loginReq = 0;
+	loginAck = 1;
+	msgReq = 2;
+	msgAck = 3;
+	syncReq = 4;
+	syncAck = 5;
+}
+enum ConversationType{
+	c2c = 0;
+	group = 1;
+}
+
+enum ElemType{
+	custom = 0;
+	text = 1;
+	image = 2;
+}
 //消息最上层
 message Pack {
-    enum PackType{
-			loginReq = 0;
-			loginAck = 1;
-			msgReq = 2;
-			msgAck = 3;
-			syncReq = 4;
-			syncAck = 5;}
+
     PackType type = 1;
     bytes body = 2;
 }
@@ -26,9 +48,10 @@ message LoginAck{
 }
 message Message{
 	//会话类型
-	int32  conversationType = 1;
+	ConversationType  conversationType = 1;
+
 	//消息类型
-	int32 type = 2;
+	ElemType type = 2;
 	//消息发送者
 	UserInfo sender = 3;
 	//消息接收者id
@@ -41,16 +64,10 @@ message Message{
 	int64 sentTime = 7;
 	//消息内容
 	bytes content =8;
+	//消息状态
+	MessageStatus status = 9;
 }
 
-//文本消息
-message TextElem{
-	string content = 1;
-}
-//图片消息
-message ImageElem{
-	string url = 1;
-}
 
 //消息发送者信息
 message UserInfo{

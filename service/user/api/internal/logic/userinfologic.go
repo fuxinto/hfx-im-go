@@ -27,7 +27,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) UserInfoL
 func (l *UserInfoLogic) UserInfo() (resp *types.UserInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 	model := &model.UserModel{Db: l.svcCtx.Db}
-	uid := l.ctx.Value("userId").(string)
+	uid := l.ctx.Value("uid").(string)
 
 	user, err := model.GetUserInfo(uid)
 	resp = &types.UserInfoResponse{
