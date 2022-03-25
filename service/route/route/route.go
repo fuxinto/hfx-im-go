@@ -13,15 +13,10 @@ import (
 )
 
 type (
-	LoginReply       = routeClient.LoginReply
-	LoginReq         = routeClient.LoginReq
-	MessageAckReply  = routeClient.MessageAckReply
-	MessageAckReq    = routeClient.MessageAckReq
 	MessagePushReply = routeClient.MessagePushReply
 	MessagePushReq   = routeClient.MessagePushReq
 
 	Route interface {
-		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error)
 		GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error)
 	}
 
@@ -34,11 +29,6 @@ func NewRoute(cli zrpc.Client) Route {
 	return &defaultRoute{
 		cli: cli,
 	}
-}
-
-func (m *defaultRoute) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error) {
-	client := routeClient.NewRouteClient(m.cli.Conn())
-	return client.Login(ctx, in, opts...)
 }
 
 func (m *defaultRoute) GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error) {

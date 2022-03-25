@@ -26,8 +26,3 @@ func (s *GateServer) RoutePushMsg(ctx context.Context, in *gateClient.MessagePus
 	l := logic.NewRoutePushMsgLogic(ctx, s.svcCtx)
 	return l.RoutePushMsg(in)
 }
-
-func (s *GateServer) RouteMsgAck(ctx context.Context, in *gateClient.MessageAckReq) (*gateClient.MessageAckReply, error) {
-	l := logic.NewRouteMsgAckLogic(ctx, s.svcCtx)
-	return l.RouteMsgAck(in)
-}

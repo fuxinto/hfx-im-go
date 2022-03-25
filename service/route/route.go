@@ -34,7 +34,7 @@ func main() {
 		}
 	})
 	defer s.Stop()
-
+	ctx.Cache.Set("test", "123")
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

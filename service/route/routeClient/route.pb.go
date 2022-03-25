@@ -24,99 +24,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type LoginReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ChannelId string `protobuf:"bytes,1,opt,name=channelId,proto3" json:"channelId,omitempty"`
-	Uid       string `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
-}
-
-func (x *LoginReq) Reset() {
-	*x = LoginReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_route_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LoginReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LoginReq) ProtoMessage() {}
-
-func (x *LoginReq) ProtoReflect() protoreflect.Message {
-	mi := &file_route_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LoginReq.ProtoReflect.Descriptor instead.
-func (*LoginReq) Descriptor() ([]byte, []int) {
-	return file_route_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *LoginReq) GetChannelId() string {
-	if x != nil {
-		return x.ChannelId
-	}
-	return ""
-}
-
-func (x *LoginReq) GetUid() string {
-	if x != nil {
-		return x.Uid
-	}
-	return ""
-}
-
-type LoginReply struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *LoginReply) Reset() {
-	*x = LoginReply{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_route_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LoginReply) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LoginReply) ProtoMessage() {}
-
-func (x *LoginReply) ProtoReflect() protoreflect.Message {
-	mi := &file_route_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LoginReply.ProtoReflect.Descriptor instead.
-func (*LoginReply) Descriptor() ([]byte, []int) {
-	return file_route_proto_rawDescGZIP(), []int{1}
-}
-
 type MessagePushReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -129,7 +36,7 @@ type MessagePushReq struct {
 func (x *MessagePushReq) Reset() {
 	*x = MessagePushReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_route_proto_msgTypes[2]
+		mi := &file_route_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -142,7 +49,7 @@ func (x *MessagePushReq) String() string {
 func (*MessagePushReq) ProtoMessage() {}
 
 func (x *MessagePushReq) ProtoReflect() protoreflect.Message {
-	mi := &file_route_proto_msgTypes[2]
+	mi := &file_route_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -155,7 +62,7 @@ func (x *MessagePushReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MessagePushReq.ProtoReflect.Descriptor instead.
 func (*MessagePushReq) Descriptor() ([]byte, []int) {
-	return file_route_proto_rawDescGZIP(), []int{2}
+	return file_route_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *MessagePushReq) GetChannelId() string {
@@ -181,7 +88,7 @@ type MessagePushReply struct {
 func (x *MessagePushReply) Reset() {
 	*x = MessagePushReply{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_route_proto_msgTypes[3]
+		mi := &file_route_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -194,7 +101,7 @@ func (x *MessagePushReply) String() string {
 func (*MessagePushReply) ProtoMessage() {}
 
 func (x *MessagePushReply) ProtoReflect() protoreflect.Message {
-	mi := &file_route_proto_msgTypes[3]
+	mi := &file_route_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -207,118 +114,21 @@ func (x *MessagePushReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MessagePushReply.ProtoReflect.Descriptor instead.
 func (*MessagePushReply) Descriptor() ([]byte, []int) {
-	return file_route_proto_rawDescGZIP(), []int{3}
-}
-
-type MessageAckReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	MsgUid string `protobuf:"bytes,1,opt,name=msgUid,proto3" json:"msgUid,omitempty"`
-}
-
-func (x *MessageAckReq) Reset() {
-	*x = MessageAckReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_route_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *MessageAckReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MessageAckReq) ProtoMessage() {}
-
-func (x *MessageAckReq) ProtoReflect() protoreflect.Message {
-	mi := &file_route_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MessageAckReq.ProtoReflect.Descriptor instead.
-func (*MessageAckReq) Descriptor() ([]byte, []int) {
-	return file_route_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *MessageAckReq) GetMsgUid() string {
-	if x != nil {
-		return x.MsgUid
-	}
-	return ""
-}
-
-type MessageAckReply struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *MessageAckReply) Reset() {
-	*x = MessageAckReply{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_route_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *MessageAckReply) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MessageAckReply) ProtoMessage() {}
-
-func (x *MessageAckReply) ProtoReflect() protoreflect.Message {
-	mi := &file_route_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MessageAckReply.ProtoReflect.Descriptor instead.
-func (*MessageAckReply) Descriptor() ([]byte, []int) {
-	return file_route_proto_rawDescGZIP(), []int{5}
+	return file_route_proto_rawDescGZIP(), []int{1}
 }
 
 var File_route_proto protoreflect.FileDescriptor
 
 var file_route_proto_rawDesc = []byte{
 	0x0a, 0x0b, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0b, 0x72,
-	0x6f, 0x75, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x3a, 0x0a, 0x08, 0x4c, 0x6f,
-	0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65,
-	0x6c, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e,
-	0x65, 0x6c, 0x49, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x75, 0x69, 0x64, 0x22, 0x0c, 0x0a, 0x0a, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
-	0x65, 0x70, 0x6c, 0x79, 0x22, 0x48, 0x0a, 0x0e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x50,
-	0x75, 0x73, 0x68, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65,
-	0x6c, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e,
-	0x65, 0x6c, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x12,
-	0x0a, 0x10, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x50, 0x75, 0x73, 0x68, 0x52, 0x65, 0x70,
-	0x6c, 0x79, 0x22, 0x27, 0x0a, 0x0d, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x41, 0x63, 0x6b,
-	0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x73, 0x67, 0x55, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x73, 0x67, 0x55, 0x69, 0x64, 0x22, 0x11, 0x0a, 0x0f, 0x4d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x41, 0x63, 0x6b, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x32, 0x8b,
-	0x01, 0x0a, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x37, 0x0a, 0x05, 0x6c, 0x6f, 0x67, 0x69,
-	0x6e, 0x12, 0x15, 0x2e, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x2e,
-	0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x72, 0x6f, 0x75, 0x74, 0x65,
-	0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x70, 0x6c,
-	0x79, 0x12, 0x49, 0x0a, 0x0b, 0x47, 0x61, 0x74, 0x65, 0x50, 0x75, 0x73, 0x68, 0x4d, 0x73, 0x67,
+	0x6f, 0x75, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x48, 0x0a, 0x0e, 0x4d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x50, 0x75, 0x73, 0x68, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09,
+	0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x22, 0x12, 0x0a, 0x10, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x50,
+	0x75, 0x73, 0x68, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x32, 0x52, 0x0a, 0x05, 0x72, 0x6f, 0x75, 0x74,
+	0x65, 0x12, 0x49, 0x0a, 0x0b, 0x47, 0x61, 0x74, 0x65, 0x50, 0x75, 0x73, 0x68, 0x4d, 0x73, 0x67,
 	0x12, 0x1b, 0x2e, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x2e, 0x4d,
 	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x50, 0x75, 0x73, 0x68, 0x52, 0x65, 0x71, 0x1a, 0x1d, 0x2e,
 	0x72, 0x6f, 0x75, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x2e, 0x4d, 0x65, 0x73, 0x73,
@@ -339,22 +149,16 @@ func file_route_proto_rawDescGZIP() []byte {
 	return file_route_proto_rawDescData
 }
 
-var file_route_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_route_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_route_proto_goTypes = []interface{}{
-	(*LoginReq)(nil),         // 0: routeClient.LoginReq
-	(*LoginReply)(nil),       // 1: routeClient.LoginReply
-	(*MessagePushReq)(nil),   // 2: routeClient.MessagePushReq
-	(*MessagePushReply)(nil), // 3: routeClient.MessagePushReply
-	(*MessageAckReq)(nil),    // 4: routeClient.MessageAckReq
-	(*MessageAckReply)(nil),  // 5: routeClient.MessageAckReply
+	(*MessagePushReq)(nil),   // 0: routeClient.MessagePushReq
+	(*MessagePushReply)(nil), // 1: routeClient.MessagePushReply
 }
 var file_route_proto_depIdxs = []int32{
-	0, // 0: routeClient.route.login:input_type -> routeClient.LoginReq
-	2, // 1: routeClient.route.GatePushMsg:input_type -> routeClient.MessagePushReq
-	1, // 2: routeClient.route.login:output_type -> routeClient.LoginReply
-	3, // 3: routeClient.route.GatePushMsg:output_type -> routeClient.MessagePushReply
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	0, // 0: routeClient.route.GatePushMsg:input_type -> routeClient.MessagePushReq
+	1, // 1: routeClient.route.GatePushMsg:output_type -> routeClient.MessagePushReply
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -367,30 +171,6 @@ func file_route_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_route_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_route_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_route_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MessagePushReq); i {
 			case 0:
 				return &v.state
@@ -402,32 +182,8 @@ func file_route_proto_init() {
 				return nil
 			}
 		}
-		file_route_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_route_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MessagePushReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_route_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MessageAckReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_route_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MessageAckReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -445,7 +201,7 @@ func file_route_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_route_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -471,7 +227,6 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RouteClient interface {
-	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error)
 	GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error)
 }
 
@@ -481,15 +236,6 @@ type routeClient struct {
 
 func NewRouteClient(cc grpc.ClientConnInterface) RouteClient {
 	return &routeClient{cc}
-}
-
-func (c *routeClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error) {
-	out := new(LoginReply)
-	err := c.cc.Invoke(ctx, "/routeClient.route/login", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *routeClient) GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error) {
@@ -503,7 +249,6 @@ func (c *routeClient) GatePushMsg(ctx context.Context, in *MessagePushReq, opts 
 
 // RouteServer is the server API for Route service.
 type RouteServer interface {
-	Login(context.Context, *LoginReq) (*LoginReply, error)
 	GatePushMsg(context.Context, *MessagePushReq) (*MessagePushReply, error)
 }
 
@@ -511,33 +256,12 @@ type RouteServer interface {
 type UnimplementedRouteServer struct {
 }
 
-func (*UnimplementedRouteServer) Login(context.Context, *LoginReq) (*LoginReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
 func (*UnimplementedRouteServer) GatePushMsg(context.Context, *MessagePushReq) (*MessagePushReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatePushMsg not implemented")
 }
 
 func RegisterRouteServer(s *grpc.Server, srv RouteServer) {
 	s.RegisterService(&_Route_serviceDesc, srv)
-}
-
-func _Route_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RouteServer).Login(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/routeClient.route/Login",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RouteServer).Login(ctx, req.(*LoginReq))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Route_GatePushMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -562,10 +286,6 @@ var _Route_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "routeClient.route",
 	HandlerType: (*RouteServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "login",
-			Handler:    _Route_Login_Handler,
-		},
 		{
 			MethodName: "GatePushMsg",
 			Handler:    _Route_GatePushMsg_Handler,

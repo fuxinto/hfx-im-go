@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"HIMGo/pkg/response"
 	"net/http"
 
 	"HIMGo/service/user/api/internal/logic"
@@ -8,14 +9,14 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func LoginDnsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func DnsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		l := logic.NewLoginDnsLogic(r.Context(), svcCtx)
-		resp, err := l.LoginDns()
+		l := logic.NewDnsLogic(r.Context(), svcCtx)
+		resp, err := l.Dns()
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
-			httpx.OkJson(w, resp)
+			response.Response(w, resp)
 		}
 	}
 }

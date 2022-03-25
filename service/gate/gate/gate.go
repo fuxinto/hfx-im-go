@@ -13,14 +13,11 @@ import (
 )
 
 type (
-	MessageAckReply  = gateClient.MessageAckReply
-	MessageAckReq    = gateClient.MessageAckReq
 	MessagePushReply = gateClient.MessagePushReply
 	MessagePushReq   = gateClient.MessagePushReq
 
 	Gate interface {
 		RoutePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error)
-		RouteMsgAck(ctx context.Context, in *MessageAckReq, opts ...grpc.CallOption) (*MessageAckReply, error)
 	}
 
 	defaultGate struct {
@@ -37,9 +34,4 @@ func NewGate(cli zrpc.Client) Gate {
 func (m *defaultGate) RoutePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error) {
 	client := gateClient.NewGateClient(m.cli.Conn())
 	return client.RoutePushMsg(ctx, in, opts...)
-}
-
-func (m *defaultGate) RouteMsgAck(ctx context.Context, in *MessageAckReq, opts ...grpc.CallOption) (*MessageAckReply, error) {
-	client := gateClient.NewGateClient(m.cli.Conn())
-	return client.RouteMsgAck(ctx, in, opts...)
 }

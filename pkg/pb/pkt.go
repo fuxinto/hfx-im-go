@@ -3,7 +3,7 @@ package pb
 import "google.golang.org/protobuf/proto"
 
 // NewFrom new packet from a header
-func NewFrom(packType Pack_PackType, body proto.Message) ([]byte, error) {
+func NewFrom(packType PackType, body proto.Message) ([]byte, error) {
 
 	data, err := proto.Marshal(body)
 	if err != nil {

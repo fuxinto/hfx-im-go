@@ -7,5 +7,6 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
-	RedisConf cache.CacheConf // redis缓存
+	RedisConf   cache.CacheConf // redis缓存
+	GateRpcConf zrpc.RpcClientConf
 }

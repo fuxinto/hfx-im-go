@@ -19,5 +19,10 @@ type UserInfoResponse struct {
 }
 
 type UserDnsResponse struct {
-	Dns []string `json:"dns"`
+	Dns []Dns `json:"dns"`
+}
+
+type Dns struct {
+	Host string `json:"host"`
+	Port int16  `json:"port"`
 }

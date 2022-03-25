@@ -5,11 +5,8 @@ import (
 	"HIMGo/service/gate/internal/config"
 	"HIMGo/service/gate/internal/server"
 	"HIMGo/service/gate/internal/svc"
-	"HIMGo/service/route/route"
-	"context"
 	"flag"
 	"fmt"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -35,11 +32,13 @@ func main() {
 		}
 	})
 	defer s.Stop()
-	req := route.LoginReq{ChannelId: "channelid333", Uid: "uid123"}
-	_, err := ctx.RouteRpc.Login(context.TODO(), &req)
-	if err != nil {
-		fmt.Println("rpc失败")
-	}
+
+	//req := route.LoginReq{ChannelId: "channelid333", Uid: "uid123"}
+	//_, err := ctx.RouteRpc.Login(context.TODO(), &req)
+	//if err != nil {
+	//	fmt.Println("rpc失败")
+	//}
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
+
 }

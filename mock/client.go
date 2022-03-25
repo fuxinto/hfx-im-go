@@ -40,7 +40,7 @@ func (c *ClientDemo) Start(userID, protocol, addr string) {
 		logx.Error(err)
 	}
 	pack := &pb.Pack{
-		Type: pb.Pack_loginReq,
+		Type: pb.PackType_loginReq,
 		Body: data,
 	}
 	data, err = proto.Marshal(pack)

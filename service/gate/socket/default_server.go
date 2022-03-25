@@ -2,7 +2,7 @@ package socket
 
 import (
 	"HIMGo/pkg/fxlog"
-	pb2 "HIMGo/pkg/pb"
+	"HIMGo/pkg/pb"
 	"bufio"
 	"context"
 	"errors"
@@ -138,12 +138,19 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 	}
 	id, meta, err := s.Accept(conn, s.options.Loginwait)
 	if err != nil {
-		data, err := pb2.NewFrom(pb2.Pack_loginAck, &pb2.LoginAck{Code: 50000, Msg: "认证失败"})
+		data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 50000, Msg: err.Error()})
 		if err != nil {
 			logx.Errorf("protobuf编码失败")
+			_ = conn.WriteFrame(OpClose, []byte(err.Error()))
 		} else {
 			conn.WriteFrame(OpBinary, data)
 		}
+		conn.Close()
+		return
+	}
+	data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 200, Msg: "登录成功", UserId: "52969eb5-a1e4-4917-a4ea-97b25d07f1c7"})
+	if err != nil {
+		logx.Errorf("protobuf编码失败")
 		_ = conn.WriteFrame(OpClose, []byte(err.Error()))
 		conn.Close()
 		return
@@ -158,18 +165,22 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 		meta = Meta{}
 	}
 	channel := NewChannel(id, meta, conn, gpool)
+
 	channel.SetReadWait(s.options.Readwait)
 	channel.SetWriteWait(s.options.Writewait)
 	s.Add(channel)
 
+	channel.Login()
+	channel.Push(data)
 	logx.Infof("accept channel - ID: %s RemoteAddr: %s", channel.ID(), channel.RemoteAddr())
 	err = channel.Readloop(s.MessageListener)
 	if err != nil {
 		logx.Info(err)
 	}
+	channel.Close()
 	s.Remove(channel.ID())
 	_ = s.Disconnect(channel.ID())
-	channel.Close()
+
 }
 
 // Shutdown Shutdown

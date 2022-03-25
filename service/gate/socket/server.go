@@ -7,16 +7,15 @@ import (
 )
 
 const (
-	DefaultReadWait  = time.Minute * 3
+	DefaultReadWait  = time.Minute * 4
 	DefaultWriteWait = time.Second * 10
 	DefaultLoginWait = time.Second * 10
-	DefaultHeartbeat = time.Second * 10
 )
 
 const (
 	// 定义读取消息的默认goroutine池大小
-	DefaultMessageReadPool = 500
-	DefaultConnectionPool  = 500
+	DefaultMessageReadPool = 50
+	DefaultConnectionPool  = 50
 )
 
 // OpCode OpCode
@@ -109,6 +108,7 @@ type Channel interface {
 	// SetWriteWait 设置写超时
 	SetWriteWait(time.Duration)
 	SetReadWait(time.Duration)
+	Login() error
 }
 
 // Client is interface of client side

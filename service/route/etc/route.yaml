@@ -9,3 +9,9 @@ RedisConf:
   - Host: 124.71.100.133:6379
     Type: node
     Pass: hfx950820
+
+GateRpcConf:
+  Etcd:
+    Hosts:
+      - :2379
+    Key: gate.rpc

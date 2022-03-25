@@ -63,7 +63,7 @@ func NewConnWithRW(conn net.Conn, rd *bufio.Reader, wr *bufio.Writer) *TcpConn {
 // ReadFrame ReadFrame
 func (c *TcpConn) ReadFrame() (socket.Frame, error) {
 
-	opcode, err := endian.ReadUint16(c.rd)
+	opcode, err := endian.ReadUint8(c.rd)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (c *TcpConn) Flush() error {
 
 // WriteFrame write a frame to w
 func WriteFrame(w io.Writer, code socket.OpCode, payload []byte) error {
-	if err := endian.WriteUint16(w, uint16(code)); err != nil {
+	if err := endian.WriteUint8(w, uint8(code)); err != nil {
 		return err
 	}
 	if err := endian.WriteBytes(w, payload); err != nil {

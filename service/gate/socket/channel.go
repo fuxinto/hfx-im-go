@@ -36,7 +36,6 @@ func NewChannel(id string, meta Meta, conn Conn, gpool *ants.Pool) Channel {
 	go func() {
 		err := ch.writeloop()
 		if err != nil {
-
 			logx.Infof("module:ChannelImpl,id:", id, err)
 		}
 	}()
@@ -72,6 +71,13 @@ func (ch *ChannelImpl) writeloop() error {
 // ID id simpling server
 func (ch *ChannelImpl) ID() string { return ch.id }
 
+func (ch *ChannelImpl) Login() error {
+	if !atomic.CompareAndSwapInt32(&ch.state, 0, 1) {
+		return fmt.Errorf("channel has started")
+	}
+	return nil
+}
+
 // Push 异步写数据
 func (ch *ChannelImpl) Push(payload []byte) error {
 	if atomic.LoadInt32(&ch.state) != 1 {
@@ -88,6 +94,7 @@ func (ch *ChannelImpl) Close() error {
 		return fmt.Errorf("channel has started")
 	}
 	close(ch.writechan)
+	ch.Conn.Close()
 	return nil
 }
 
@@ -107,9 +114,7 @@ func (ch *ChannelImpl) SetReadWait(readwait time.Duration) {
 }
 
 func (ch *ChannelImpl) Readloop(lst MessageListener) error {
-	if !atomic.CompareAndSwapInt32(&ch.state, 0, 1) {
-		return fmt.Errorf("channel has started")
-	}
+
 	for {
 		_ = ch.SetReadDeadline(time.Now().Add(ch.readwait))
 

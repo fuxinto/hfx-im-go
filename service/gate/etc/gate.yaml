@@ -1,4 +1,4 @@
-Name: gate.rpc
+Name: gate01
 ListenOn: :8080
 Etcd:
   Hosts:

@@ -4,10 +4,11 @@
 package server
 
 import (
+	"context"
+
 	"HIMGo/service/route/internal/logic"
 	"HIMGo/service/route/internal/svc"
 	"HIMGo/service/route/routeClient"
-	"context"
 )
 
 type RouteServer struct {
@@ -19,11 +20,6 @@ func NewRouteServer(svcCtx *svc.ServiceContext) *RouteServer {
 	return &RouteServer{
 		svcCtx: svcCtx,
 	}
-}
-
-func (s *RouteServer) Login(ctx context.Context, in *routeClient.LoginReq) (*routeClient.LoginReply, error) {
-	l := logic.NewLoginLogic(ctx, s.svcCtx)
-	return l.Login(in)
 }
 
 func (s *RouteServer) GatePushMsg(ctx context.Context, in *routeClient.MessagePushReq) (*routeClient.MessagePushReply, error) {

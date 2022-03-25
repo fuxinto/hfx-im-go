@@ -21,7 +21,11 @@ type (
 
 	//DNS信息
 	UserDnsResponse {
-		Dns []string `json:"dns"`
+		Dns []Dns `json:"dns"`
+	}
+	Dns {
+		Host string `json:"host"`
+		Port int16  `json:"port"`
 	}
 )
 
@@ -37,6 +41,6 @@ service User {
 	@handler UserInfo
 	get /api/user/userinfo returns (UserInfoResponse)
 	
-	@handler LoginDns
+	@handler Dns
 	get /api/user/dns returns(UserDnsResponse)
 }

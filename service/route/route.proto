@@ -5,14 +5,7 @@ package routeClient;
 
 option go_package = "./routeClient";
 
-message LoginReq{
-  string  channelId = 1;
-  string  uid = 2;
-}
 
-message LoginReply{
-
-}
 
 
 message MessagePushReq{
@@ -23,16 +16,7 @@ message MessagePushReply{
 
 }
 
-message MessageAckReq {
-  string msgUid = 1;
-}
-
-message MessageAckReply{
-
-}
-
 
 service route {
-  rpc login(LoginReq) returns(LoginReply);
   rpc GatePushMsg(MessagePushReq) returns(MessagePushReply);
 }

@@ -9,22 +9,27 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type LoginDnsLogic struct {
+type DnsLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewLoginDnsLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginDnsLogic {
-	return LoginDnsLogic{
+func NewDnsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DnsLogic {
+	return &DnsLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *LoginDnsLogic) LoginDns() (resp *types.UserDnsResponse, err error) {
+func (l *DnsLogic) Dns() (resp *types.UserDnsResponse, err error) {
 	// todo: add your logic here and delete this line
-
-	return &types.UserDnsResponse{Dns: []string{"124.71.100.133:8081"}}, nil
+	dns := types.Dns{
+		Host: "127.0.0.1",
+		Port: 8090,
+	}
+	ary := []types.Dns{dns}
+	resp = &types.UserDnsResponse{Dns: ary}
+	return resp, nil
 }
