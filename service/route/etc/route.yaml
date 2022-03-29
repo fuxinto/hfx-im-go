@@ -1,9 +1,10 @@
-Name: route.rpc
+
+Name: route01
 ListenOn: :8081
 Etcd:
   Hosts:
     - :2379
-  Key: 'route.rpc'
+  Key: route.rpc
 
 RedisConf:
   - Host: 124.71.100.133:6379
@@ -15,3 +16,7 @@ GateRpcConf:
     Hosts:
       - :2379
     Key: gate.rpc
+
+AuthConf:
+  AccessSecret: uOvKLmVfztaXGpNYd4Z0I1SiT7MweJhl
+  AccessExpire: 86400

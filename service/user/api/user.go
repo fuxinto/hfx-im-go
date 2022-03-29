@@ -2,7 +2,7 @@ package main
 
 import (
 	"HIMGo/pkg/fxerror"
-	"HIMGo/pkg/response"
+	"HIMGo/pkg/jwtx"
 	"flag"
 	"fmt"
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -27,13 +27,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 	server := rest.MustNewServer(c.RestConf,
 		rest.WithUnauthorizedCallback(func(w http.ResponseWriter, r *http.Request, err error) {
-			if err != nil {
-				fmt.Printf(err.Error())
-			}
-			var body response.Body
-			body.Code = 2000
-			body.Msg = "认证失败请重新登录"
-			httpx.OkJson(w, body)
+			jwtx.SwitchTokenError(w, err)
 		}))
 	defer server.Stop()
 

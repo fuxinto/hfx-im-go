@@ -1,15 +1,15 @@
 package socket
 
 import (
-	"HIMGo/service/gate/write"
 	"HIMGo/service/route/route"
 	"context"
 
 	"fmt"
 
+	"time"
+
 	"github.com/segmentio/ksuid"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 const (
@@ -34,54 +34,37 @@ func (h *Handler) Accept(conn Conn, timeout time.Duration) (string, Meta, error)
 	}
 	//logx.Infof("%s", frame.GetPayload())
 
-	id := ksuid.New().String()
-	req := &route.MessagePushReq{
-		ChannelId: id,
-		Message:   frame.GetPayload(),
-	}
-	if _, err2 := h.RouteRpc.GatePushMsg(context.TODO(), req); err2 != nil {
+	id := generateChannelID(h.ServiceID)
+
+	if err2 := h.rpcPush(id, frame.GetPayload()); err2 != nil {
 		return "", nil, fmt.Errorf("read Not LoginReq")
 	}
+
 	return id, nil, nil
+}
+
+func generateChannelID(serviceID string) string {
+	return fmt.Sprintf("%s:%s", serviceID, ksuid.New().String())
+}
+
+func (h *Handler) rpcPush(id string, data []byte) error {
+	req := &route.MessagePushReq{
+		ChannelId: id,
+		Message:   data,
+	}
+	if _, err2 := h.RouteRpc.GatePushMsg(context.TODO(), req); err2 != nil {
+		return err2
+	}
+	return nil
 }
 
 // Receive default listener
 func (h *Handler) Receive(ag Agent, payload []byte) {
 
-	//buf := bytes.NewBuffer(payload)
-	//packet, err := pkt.Read(buf)
-	//if err != nil {
-	//	log.Error(err)
-	//	return
-	//}
-	//if basicPkt, ok := packet.(*pkt.BasicPkt); ok {
-	//	if basicPkt.Code == pkt.CodePing {
-	//		_ = ag.Push(pkt.Marshal(&pkt.BasicPkt{Code: pkt.CodePong}))
-	//	}
-	//	return
-	//}
-	//if logicPkt, ok := packet.(*pkt.LogicPkt); ok {
-	//	logicPkt.ChannelId = ag.ID()
-	//
-	//	messageInTotal.WithLabelValues(h.ServiceID, wire.SNTGateway, logicPkt.Command).Inc()
-	//	messageInFlowBytes.WithLabelValues(h.ServiceID, wire.SNTGateway, logicPkt.Command).Add(float64(len(payload)))
-	//
-	//	// 把meta注入到header中
-	//	if ag.GetMeta() != nil {
-	//		logicPkt.AddStringMeta(MetaKeyApp, ag.GetMeta()[MetaKeyApp])
-	//		logicPkt.AddStringMeta(MetaKeyAccount, ag.GetMeta()[MetaKeyAccount])
-	//	}
-	//
-	//	err = container.Forward(logicPkt.ServiceName(), logicPkt)
-	//	if err != nil {
-	//		logger.WithFields(logger.Fields{
-	//			"module": "handler",
-	//			"id":     ag.ID(),
-	//			"cmd":    logicPkt.Command,
-	//			"dest":   logicPkt.Dest,
-	//		}).Error(err)
-	//	}
-	//}
+	err := h.rpcPush(ag.ID(), payload)
+	if err != nil {
+		logx.Errorf("rpc push Route消息失败", err)
+	}
 }
 
 // Disconnect default listener
@@ -94,8 +77,4 @@ func (h *Handler) Disconnect(id string) error {
 	//}
 
 	return nil
-}
-
-func generateChannelID(serviceID, account string) string {
-	return fmt.Sprintf("%s_%s_%d", serviceID, account, wire.Seq.Next())
 }

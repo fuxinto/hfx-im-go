@@ -1,5 +1,9 @@
 package fxerror
 
+import (
+	"errors"
+)
+
 const defaultCode = 1001
 
 type CodeError struct {
@@ -11,6 +15,8 @@ type CodeErrorResponse struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 }
+
+var RedisNotFound = errors.New("RedisNotFound")
 
 func NewCodeError(code int, msg string) error {
 	return &CodeError{Code: code, Msg: msg}

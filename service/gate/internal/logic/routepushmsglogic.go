@@ -25,6 +25,9 @@ func NewRoutePushMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Rout
 
 func (l *RoutePushMsgLogic) RoutePushMsg(in *gateClient.MessagePushReq) (*gateClient.MessagePushReply, error) {
 	// todo: add your logic here and delete this line
-
+	err := l.svcCtx.HIMService.Push(in.ChannelId, in.Body)
+	if err != nil {
+		return &gateClient.MessagePushReply{}, err
+	}
 	return &gateClient.MessagePushReply{}, nil
 }

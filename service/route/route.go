@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"HIMGo/service/route/internal/config"
 	"HIMGo/service/route/internal/server"
@@ -34,7 +35,7 @@ func main() {
 		}
 	})
 	defer s.Stop()
-	ctx.Cache.Set("test", "123")
+	logx.Error("测试")
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

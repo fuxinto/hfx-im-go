@@ -136,7 +136,7 @@ extension Pb_PackType: CaseIterable {
 
 #endif  // swift(>=4.2)
 
-enum Pb_ConversationType: SwiftProtobuf.Enum {
+enum Pb_SessionType: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case c2C // = 0
   case group // = 1
@@ -166,9 +166,9 @@ enum Pb_ConversationType: SwiftProtobuf.Enum {
 
 #if swift(>=4.2)
 
-extension Pb_ConversationType: CaseIterable {
+extension Pb_SessionType: CaseIterable {
   // The compiler won't synthesize support with the UNRECOGNIZED case.
-  static var allCases: [Pb_ConversationType] = [
+  static var allCases: [Pb_SessionType] = [
     .c2C,
     .group,
   ]
@@ -271,7 +271,7 @@ struct Pb_Message {
   // methods supported on all messages.
 
   ///会话类型
-  var conversationType: Pb_ConversationType = .c2C
+  var sessionType: Pb_SessionType = .c2C
 
   ///消息类型
   var type: Pb_ElemType = .custom
@@ -299,7 +299,7 @@ struct Pb_Message {
   var sentTime: Int64 = 0
 
   ///消息内容
-  var content: Data = Data()
+  var content: String = String()
 
   ///消息状态
   var status: Pb_MessageStatus = .init_
@@ -370,7 +370,7 @@ extension Pb_PackType: SwiftProtobuf._ProtoNameProviding {
   ]
 }
 
-extension Pb_ConversationType: SwiftProtobuf._ProtoNameProviding {
+extension Pb_SessionType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     0: .same(proto: "c2c"),
     1: .same(proto: "group"),
@@ -502,7 +502,7 @@ extension Pb_LoginAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
 extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Message"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "conversationType"),
+    1: .same(proto: "sessionType"),
     2: .same(proto: "type"),
     3: .same(proto: "sender"),
     4: .same(proto: "targetId"),
@@ -519,14 +519,14 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularEnumField(value: &self.conversationType) }()
+      case 1: try { try decoder.decodeSingularEnumField(value: &self.sessionType) }()
       case 2: try { try decoder.decodeSingularEnumField(value: &self.type) }()
       case 3: try { try decoder.decodeSingularMessageField(value: &self._sender) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.targetID) }()
       case 5: try { try decoder.decodeSingularStringField(value: &self.messageID) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self.messageUid) }()
       case 7: try { try decoder.decodeSingularInt64Field(value: &self.sentTime) }()
-      case 8: try { try decoder.decodeSingularBytesField(value: &self.content) }()
+      case 8: try { try decoder.decodeSingularStringField(value: &self.content) }()
       case 9: try { try decoder.decodeSingularEnumField(value: &self.status) }()
       default: break
       }
@@ -538,8 +538,8 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if self.conversationType != .c2C {
-      try visitor.visitSingularEnumField(value: self.conversationType, fieldNumber: 1)
+    if self.sessionType != .c2C {
+      try visitor.visitSingularEnumField(value: self.sessionType, fieldNumber: 1)
     }
     if self.type != .custom {
       try visitor.visitSingularEnumField(value: self.type, fieldNumber: 2)
@@ -560,7 +560,7 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       try visitor.visitSingularInt64Field(value: self.sentTime, fieldNumber: 7)
     }
     if !self.content.isEmpty {
-      try visitor.visitSingularBytesField(value: self.content, fieldNumber: 8)
+      try visitor.visitSingularStringField(value: self.content, fieldNumber: 8)
     }
     if self.status != .init_ {
       try visitor.visitSingularEnumField(value: self.status, fieldNumber: 9)
@@ -569,7 +569,7 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   }
 
   static func ==(lhs: Pb_Message, rhs: Pb_Message) -> Bool {
-    if lhs.conversationType != rhs.conversationType {return false}
+    if lhs.sessionType != rhs.sessionType {return false}
     if lhs.type != rhs.type {return false}
     if lhs._sender != rhs._sender {return false}
     if lhs.targetID != rhs.targetID {return false}

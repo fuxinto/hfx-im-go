@@ -20,7 +20,7 @@ enum PackType{
 	syncReq = 4;
 	syncAck = 5;
 }
-enum ConversationType{
+enum SessionType{
 	c2c = 0;
 	group = 1;
 }
@@ -32,7 +32,6 @@ enum ElemType{
 }
 //消息最上层
 message Pack {
-
     PackType type = 1;
     bytes body = 2;
 }
@@ -48,8 +47,7 @@ message LoginAck{
 }
 message Message{
 	//会话类型
-	ConversationType  conversationType = 1;
-
+	SessionType  sessionType = 1;
 	//消息类型
 	ElemType type = 2;
 	//消息发送者
@@ -63,7 +61,7 @@ message Message{
 	//消息发送时间
 	int64 sentTime = 7;
 	//消息内容
-	bytes content =8;
+	string content = 8;
 	//消息状态
 	MessageStatus status = 9;
 }

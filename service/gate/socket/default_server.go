@@ -7,16 +7,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/panjf2000/ants/v2"
 	"github.com/zeromicro/go-zero/core/logx"
 
-	"github.com/gobwas/pool/pbufio"
-	"github.com/gobwas/ws"
-	"github.com/segmentio/ksuid"
 	"net"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/gobwas/pool/pbufio"
+	"github.com/gobwas/ws"
+	"github.com/segmentio/ksuid"
 )
 
 type Upgrader interface {
@@ -150,7 +152,7 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 	}
 	data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 200, Msg: "登录成功", UserId: "52969eb5-a1e4-4917-a4ea-97b25d07f1c7"})
 	if err != nil {
-		logx.Errorf("protobuf编码失败")
+		logx.Errorf("登录错误", err)
 		_ = conn.WriteFrame(OpClose, []byte(err.Error()))
 		conn.Close()
 		return

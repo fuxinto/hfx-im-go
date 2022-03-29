@@ -1,11 +1,9 @@
 package logic
 
 import (
-	"HIMGo/service/route/internal/msghandler"
 	"HIMGo/service/route/internal/svc"
 	"HIMGo/service/route/routeClient"
 	"context"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,5 +24,5 @@ func NewGatePushMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GateP
 func (l *GatePushMsgLogic) GatePushMsg(in *routeClient.MessagePushReq) (*routeClient.MessagePushReply, error) {
 	// todo: add your logic here and delete this line
 
-	return msghandler.Handler(in)
+	return l.Handler(in)
 }

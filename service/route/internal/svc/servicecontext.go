@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"HIMGo/pkg/fxerror"
 	"HIMGo/service/gate/gate"
 	"HIMGo/service/route/internal/config"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -14,9 +15,10 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+
 	return &ServiceContext{
 		Config: c,
-		Cache:  cache.New(c.RedisConf, syncx.NewSingleFlight(), cache.NewStat("him"), nil),
+		Cache:  cache.New(c.RedisConf, syncx.NewSingleFlight(), cache.NewStat("him"), fxerror.RedisNotFound),
 		//GateRpc: gate.NewGate(zrpc.MustNewClient(c.GateRpcConf)),
 	}
 }

@@ -4,9 +4,10 @@ import (
 	"HIMGo/service/gate/socket"
 	"HIMGo/service/gate/socket/endian"
 	"bufio"
-	"github.com/zeromicro/go-zero/core/logx"
 	"io"
 	"net"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // Frame Frame

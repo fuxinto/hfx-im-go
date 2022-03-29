@@ -9,4 +9,8 @@ type Config struct {
 	zrpc.RpcServerConf
 	RedisConf   cache.CacheConf // redis缓存
 	GateRpcConf zrpc.RpcClientConf
+	AuthConf    struct {
+		AccessSecret string
+		AccessExpire int64
+	}
 }
