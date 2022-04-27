@@ -84,10 +84,12 @@ enum Pb_PackType: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case loginReq // = 0
   case loginAck // = 1
-  case msgReq // = 2
-  case msgAck // = 3
-  case syncReq // = 4
-  case syncAck // = 5
+  case heartbeat // = 2
+  case heartbeatAck // = 3
+  case msgReq // = 4
+  case msgAck // = 5
+  case syncReq // = 6
+  case syncAck // = 7
   case UNRECOGNIZED(Int)
 
   init() {
@@ -98,10 +100,12 @@ enum Pb_PackType: SwiftProtobuf.Enum {
     switch rawValue {
     case 0: self = .loginReq
     case 1: self = .loginAck
-    case 2: self = .msgReq
-    case 3: self = .msgAck
-    case 4: self = .syncReq
-    case 5: self = .syncAck
+    case 2: self = .heartbeat
+    case 3: self = .heartbeatAck
+    case 4: self = .msgReq
+    case 5: self = .msgAck
+    case 6: self = .syncReq
+    case 7: self = .syncAck
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
@@ -110,10 +114,12 @@ enum Pb_PackType: SwiftProtobuf.Enum {
     switch self {
     case .loginReq: return 0
     case .loginAck: return 1
-    case .msgReq: return 2
-    case .msgAck: return 3
-    case .syncReq: return 4
-    case .syncAck: return 5
+    case .heartbeat: return 2
+    case .heartbeatAck: return 3
+    case .msgReq: return 4
+    case .msgAck: return 5
+    case .syncReq: return 6
+    case .syncAck: return 7
     case .UNRECOGNIZED(let i): return i
     }
   }
@@ -127,6 +133,8 @@ extension Pb_PackType: CaseIterable {
   static var allCases: [Pb_PackType] = [
     .loginReq,
     .loginAck,
+    .heartbeat,
+    .heartbeatAck,
     .msgReq,
     .msgAck,
     .syncReq,
@@ -363,10 +371,12 @@ extension Pb_PackType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     0: .same(proto: "loginReq"),
     1: .same(proto: "loginAck"),
-    2: .same(proto: "msgReq"),
-    3: .same(proto: "msgAck"),
-    4: .same(proto: "syncReq"),
-    5: .same(proto: "syncAck"),
+    2: .same(proto: "heartbeat"),
+    3: .same(proto: "heartbeatAck"),
+    4: .same(proto: "msgReq"),
+    5: .same(proto: "msgAck"),
+    6: .same(proto: "syncReq"),
+    7: .same(proto: "syncAck"),
   ]
 }
 

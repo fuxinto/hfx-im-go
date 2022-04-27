@@ -6,35 +6,7 @@ import (
 	"bufio"
 	"io"
 	"net"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
-
-// Frame Frame
-type Frame struct {
-	OpCode  socket.OpCode
-	Payload []byte
-}
-
-// SetOpCode SetOpCode
-func (f *Frame) SetOpCode(code socket.OpCode) {
-	f.OpCode = code
-}
-
-// GetOpCode GetOpCode
-func (f *Frame) GetOpCode() socket.OpCode {
-	return f.OpCode
-}
-
-// SetPayload SetPayload
-func (f *Frame) SetPayload(payload []byte) {
-	f.Payload = payload
-}
-
-// GetPayload GetPayload
-func (f *Frame) GetPayload() []byte {
-	return f.Payload
-}
 
 // TcpConn Conn
 type TcpConn struct {
@@ -44,7 +16,6 @@ type TcpConn struct {
 }
 
 // NewConn NewConn
-
 func NewConn(conn net.Conn) socket.Conn {
 	return &TcpConn{
 		Conn: conn,
@@ -62,32 +33,18 @@ func NewConnWithRW(conn net.Conn, rd *bufio.Reader, wr *bufio.Writer) *TcpConn {
 }
 
 // ReadFrame ReadFrame
-func (c *TcpConn) ReadFrame() (socket.Frame, error) {
-
-	opcode, err := endian.ReadUint8(c.rd)
-	if err != nil {
-		return nil, err
-	}
+func (c *TcpConn) ReadFrame() ([]byte, error) {
 	payload, err := endian.ReadBytes(c.rd)
 	if err != nil {
 		return nil, err
 	}
-	code := socket.OpCode(opcode)
-	//if code == him.OpPong {
-	//	logx.Info("收到心跳回应")
-	//}
-	if code == socket.OpPing {
-		logx.Info("收到心跳链接")
-	}
-	return &Frame{
-		OpCode:  code,
-		Payload: payload,
-	}, nil
+
+	return payload, nil
 }
 
 // WriteFrame WriteFrame
-func (c *TcpConn) WriteFrame(code socket.OpCode, payload []byte) error {
-	return WriteFrame(c.wr, code, payload)
+func (c *TcpConn) WriteFrame(payload []byte) error {
+	return WriteFrame(c.wr, payload)
 }
 
 // Flush Flush
@@ -96,10 +53,7 @@ func (c *TcpConn) Flush() error {
 }
 
 // WriteFrame write a frame to w
-func WriteFrame(w io.Writer, code socket.OpCode, payload []byte) error {
-	if err := endian.WriteUint8(w, uint8(code)); err != nil {
-		return err
-	}
+func WriteFrame(w io.Writer, payload []byte) error {
 	if err := endian.WriteBytes(w, payload); err != nil {
 		return err
 	}

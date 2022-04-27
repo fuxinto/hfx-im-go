@@ -18,25 +18,6 @@ const (
 	DefaultConnectionPool  = 50
 )
 
-// OpCode OpCode
-type OpCode byte
-
-// Opcode type
-const (
-	OpBinary OpCode = 0x0
-	OpClose  OpCode = 0x8
-	OpPing   OpCode = 0x9
-	OpPong   OpCode = 0xa
-)
-
-// Frame Frame
-type Frame interface {
-	SetOpCode(OpCode)
-	GetOpCode() OpCode
-	SetPayload([]byte)
-	GetPayload() []byte
-}
-
 // Server 定义了一个tcp/websocket不同协议通用的服务端的接口
 type Server interface {
 
@@ -93,8 +74,8 @@ type Agent interface {
 // Conn Connection
 type Conn interface {
 	net.Conn
-	ReadFrame() (Frame, error)
-	WriteFrame(OpCode, []byte) error
+	ReadFrame() ([]byte, error)
+	WriteFrame([]byte) error
 	Flush() error
 }
 
@@ -118,7 +99,7 @@ type Client interface {
 	// SetDialer 设置拨号处理器
 	SetDialer(Dialer)
 	Send([]byte) error
-	Read() (Frame, error)
+	Read() ([]byte, error)
 	// Close 关闭
 	Close()
 }

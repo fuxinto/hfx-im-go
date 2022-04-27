@@ -1,12 +1,12 @@
 package socket
 
 import (
-	"errors"
 	"fmt"
-	"github.com/panjf2000/ants/v2"
-	"github.com/zeromicro/go-zero/core/logx"
 	"sync/atomic"
 	"time"
+
+	"github.com/panjf2000/ants/v2"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // ChannelImpl is a websocket implement of channel
@@ -44,7 +44,7 @@ func NewChannel(id string, meta Meta, conn Conn, gpool *ants.Pool) Channel {
 
 func (ch *ChannelImpl) writeloop() error {
 	for payload := range ch.writechan {
-		err := ch.WriteFrame(OpBinary, payload)
+		err := ch.WriteFrame(payload)
 		if err != nil {
 			return err
 		}
@@ -52,7 +52,7 @@ func (ch *ChannelImpl) writeloop() error {
 		chanlen := len(ch.writechan)
 		for i := 0; i < chanlen; i++ {
 			payload = <-ch.writechan
-			err := ch.WriteFrame(OpBinary, payload)
+			err := ch.WriteFrame(payload)
 			if err != nil {
 				return err
 			}
@@ -118,28 +118,27 @@ func (ch *ChannelImpl) Readloop(lst MessageListener) error {
 	for {
 		_ = ch.SetReadDeadline(time.Now().Add(ch.readwait))
 
-		frame, err := ch.ReadFrame()
+		payload, err := ch.ReadFrame()
 		if err != nil {
 			return err
 		}
-		if frame.GetOpCode() == OpClose {
-			return errors.New("remote side close the channel")
-		}
-		if frame.GetOpCode() == OpPing {
+		// if frame.GetOpCode() == OpClose {
+		// 	return errors.New("remote side close the channel")
+		// }
+		// if frame.GetOpCode() == OpPing {
 
-			logx.Infof("struct:ChannelImpl,func readloop,id:%s", ch.id)
-			//ch.Push([]byte("服务器发送心跳"))
-			err1 := ch.WriteFrame(OpPong, nil)
-			if err1 == nil {
-				_ = ch.Conn.SetWriteDeadline(time.Now().Add(ch.writeWait))
-				ch.Flush()
-			}
-			continue
-		}
-		payload := frame.GetPayload()
-		if len(payload) == 0 {
-			continue
-		}
+		// 	logx.Infof("struct:ChannelImpl,func readloop,id:%s", ch.id)
+		// 	//ch.Push([]byte("服务器发送心跳"))
+		// 	err1 := ch.WriteFrame(OpPong, nil)
+		// 	if err1 == nil {
+		// 		_ = ch.Conn.SetWriteDeadline(time.Now().Add(ch.writeWait))
+		// 		ch.Flush()
+		// 	}
+		// 	continue
+		// }
+		// if len(payload) == 0 {
+		// 	continue
+		// }
 		err = ch.gpool.Submit(func() {
 			lst.Receive(ch, payload)
 

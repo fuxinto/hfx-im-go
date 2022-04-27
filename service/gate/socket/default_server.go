@@ -143,9 +143,9 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 		data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 50000, Msg: err.Error()})
 		if err != nil {
 			logx.Errorf("protobuf编码失败")
-			_ = conn.WriteFrame(OpClose, []byte(err.Error()))
+			// _ = conn.WriteFrame([]byte(err.Error()))
 		} else {
-			conn.WriteFrame(OpBinary, data)
+			conn.WriteFrame(data)
 		}
 		conn.Close()
 		return
@@ -153,13 +153,13 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 	data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 200, Msg: "登录成功", UserId: "52969eb5-a1e4-4917-a4ea-97b25d07f1c7"})
 	if err != nil {
 		logx.Errorf("登录错误", err)
-		_ = conn.WriteFrame(OpClose, []byte(err.Error()))
+		_ = conn.WriteFrame([]byte(err.Error()))
 		conn.Close()
 		return
 	}
 
 	if _, ok := s.Get(id); ok {
-		_ = conn.WriteFrame(OpClose, []byte("channelId is repeated"))
+		// _ = conn.WriteFrame([]byte("channelId is repeated"))
 		conn.Close()
 		return
 	}

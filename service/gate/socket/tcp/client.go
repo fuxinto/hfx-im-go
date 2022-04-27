@@ -4,10 +4,11 @@ import (
 	"HIMGo/service/gate/socket"
 	"errors"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // ClientOptions ClientOptions
@@ -100,7 +101,7 @@ func (c *Client) Send(payload []byte) error {
 	if err != nil {
 		return err
 	}
-	err = c.conn.WriteFrame(socket.OpBinary, payload)
+	err = c.conn.WriteFrame(payload)
 	if err != nil {
 		return err
 	}
@@ -113,16 +114,16 @@ func (c *Client) Close() {
 		if c.conn == nil {
 			return
 		}
-		// graceful close connection
-		_ = c.conn.WriteFrame(socket.OpClose, nil)
-		c.conn.Flush()
+		// // graceful close connection
+		// _ = c.conn.WriteFrame( nil)
+		// c.conn.Flush()
 
 		c.conn.Close()
 		atomic.CompareAndSwapInt32(&c.state, 1, 0)
 	})
 }
 
-func (c *Client) Read() (socket.Frame, error) {
+func (c *Client) Read() ([]byte, error) {
 	if c.conn == nil {
 		return nil, errors.New("connection is nil")
 	}
@@ -133,12 +134,7 @@ func (c *Client) Read() (socket.Frame, error) {
 	if err != nil {
 		return nil, err
 	}
-	if frame.GetOpCode() == socket.OpPong {
-		logx.Infof("收到心跳回应:%s", c.id)
-	}
-	if frame.GetOpCode() == socket.OpClose {
-		return nil, errors.New("remote side close the channel")
-	}
+
 	return frame, nil
 }
 
@@ -159,7 +155,7 @@ func (c *Client) ping() error {
 	if err != nil {
 		return err
 	}
-	err = c.conn.WriteFrame(socket.OpPing, nil)
+	err = c.conn.WriteFrame(nil)
 	if err != nil {
 		return err
 	}

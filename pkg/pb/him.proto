@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 option go_package = "./pb";
-
+//消息状态
 enum MessageStatus {
 	init = 0;
 	sending = 1;
@@ -12,19 +12,22 @@ enum MessageStatus {
 	localImported = 5;
 	localRevoked = 6;
 }
+
 enum PackType{
 	loginReq = 0;
 	loginAck = 1;
 	msgReq = 2;
 	msgAck = 3;
-	syncReq = 4;
-	syncAck = 5;
+	//消息同步当做心跳，可以避免在线情况下因为网络等原因消息未送达，不用等用户下次登录就可以重新推送消息
+	msgPull = 4;
+	msgPush = 5;
 }
+//会话类型
 enum SessionType{
 	c2c = 0;
 	group = 1;
 }
-
+//消息类型
 enum ElemType{
 	custom = 0;
 	text = 1;
@@ -38,6 +41,7 @@ message Pack {
 //设备登录
 message LoginReq{
 	string token = 1;
+	string deviceId = 2; 
 }
 //登录回执
 message LoginAck{
@@ -66,6 +70,13 @@ message Message{
 	MessageStatus status = 9;
 }
 
+//消息拉取
+message MessagePull{
+	int64 lastTime = 1;
+}
+message MessagePush{
+	
+}
 
 //消息发送者信息
 message UserInfo{
@@ -79,3 +90,4 @@ message MessageAck{
 	string messageId = 1;
 	string messagedUid = 2;
 }
+
