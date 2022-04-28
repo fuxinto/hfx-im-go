@@ -16,11 +16,14 @@ enum MessageStatus {
 enum PackType{
 	loginReq = 0;
 	loginAck = 1;
-	msgReq = 2;
-	msgAck = 3;
+	sessionPull = 2;
+	sessionPush = 3;
 	//消息同步当做心跳，可以避免在线情况下因为网络等原因消息未送达，不用等用户下次登录就可以重新推送消息
 	msgPull = 4;
 	msgPush = 5;
+	msgReq = 6;
+	msgAck = 7;
+
 }
 //会话类型
 enum SessionType{
@@ -72,11 +75,34 @@ message Message{
 
 //消息拉取
 message MessagePull{
-	int64 lastTime = 1;
+	int64 timestamp = 1;
+	//升序，获取最新消息，做为心跳包，降序获取历史消息
+	bool ascending = 2;
 }
+//消息推
 message MessagePush{
-	
+	repeated Message msglist = 1;
 }
+//会话列表拉取
+message SessionPull{
+	int64 timestamp = 1;
+}
+//会话列表推
+message SessionPush{
+	//是否有离线消息
+	bool isOfflineMsg = 1;
+	//是否置顶
+	bool isPinned = 2;
+	//会话id
+	string sessionId = 3;
+	//最后消息时间
+	int64 timestamp = 4;
+	//未读数
+	int64 unreadCount = 5;
+	//最新消息条数，一页20条
+	repeated  Message msglist = 6;
+}
+
 
 //消息发送者信息
 message UserInfo{

@@ -20,6 +20,7 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
+///消息状态
 enum Pb_MessageStatus: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case init_ // = 0
@@ -84,12 +85,14 @@ enum Pb_PackType: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case loginReq // = 0
   case loginAck // = 1
-  case heartbeat // = 2
-  case heartbeatAck // = 3
-  case msgReq // = 4
-  case msgAck // = 5
-  case syncReq // = 6
-  case syncAck // = 7
+  case sessionPull // = 2
+  case sessionPush // = 3
+
+  ///消息同步当做心跳，可以避免在线情况下因为网络等原因消息未送达，不用等用户下次登录就可以重新推送消息
+  case msgPull // = 4
+  case msgPush // = 5
+  case msgReq // = 6
+  case msgAck // = 7
   case UNRECOGNIZED(Int)
 
   init() {
@@ -100,12 +103,12 @@ enum Pb_PackType: SwiftProtobuf.Enum {
     switch rawValue {
     case 0: self = .loginReq
     case 1: self = .loginAck
-    case 2: self = .heartbeat
-    case 3: self = .heartbeatAck
-    case 4: self = .msgReq
-    case 5: self = .msgAck
-    case 6: self = .syncReq
-    case 7: self = .syncAck
+    case 2: self = .sessionPull
+    case 3: self = .sessionPush
+    case 4: self = .msgPull
+    case 5: self = .msgPush
+    case 6: self = .msgReq
+    case 7: self = .msgAck
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
@@ -114,12 +117,12 @@ enum Pb_PackType: SwiftProtobuf.Enum {
     switch self {
     case .loginReq: return 0
     case .loginAck: return 1
-    case .heartbeat: return 2
-    case .heartbeatAck: return 3
-    case .msgReq: return 4
-    case .msgAck: return 5
-    case .syncReq: return 6
-    case .syncAck: return 7
+    case .sessionPull: return 2
+    case .sessionPush: return 3
+    case .msgPull: return 4
+    case .msgPush: return 5
+    case .msgReq: return 6
+    case .msgAck: return 7
     case .UNRECOGNIZED(let i): return i
     }
   }
@@ -133,17 +136,18 @@ extension Pb_PackType: CaseIterable {
   static var allCases: [Pb_PackType] = [
     .loginReq,
     .loginAck,
-    .heartbeat,
-    .heartbeatAck,
+    .sessionPull,
+    .sessionPush,
+    .msgPull,
+    .msgPush,
     .msgReq,
     .msgAck,
-    .syncReq,
-    .syncAck,
   ]
 }
 
 #endif  // swift(>=4.2)
 
+///会话类型
 enum Pb_SessionType: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case c2C // = 0
@@ -184,6 +188,7 @@ extension Pb_SessionType: CaseIterable {
 
 #endif  // swift(>=4.2)
 
+///消息类型
 enum Pb_ElemType: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case custom // = 0
@@ -250,6 +255,8 @@ struct Pb_LoginReq {
   // methods supported on all messages.
 
   var token: String = String()
+
+  var deviceID: String = String()
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -319,6 +326,77 @@ struct Pb_Message {
   fileprivate var _sender: Pb_UserInfo? = nil
 }
 
+///消息拉取
+struct Pb_MessagePull {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var timestamp: Int64 = 0
+
+  ///升序，获取最新消息，做为心跳包，降序获取历史消息
+  var ascending: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+///消息推
+struct Pb_MessagePush {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var msglist: [Pb_Message] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+///会话列表拉取
+struct Pb_SessionPull {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var timestamp: Int64 = 0
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+///会话列表推
+struct Pb_SessionPush {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  ///是否有离线消息
+  var isOfflineMsg: Bool = false
+
+  ///是否置顶
+  var isPinned: Bool = false
+
+  ///会话id
+  var sessionID: String = String()
+
+  ///最后消息时间
+  var timestamp: Int64 = 0
+
+  ///未读数
+  var unreadCount: Int64 = 0
+
+  ///最新消息条数，一页20条
+  var msglist: [Pb_Message] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
 ///消息发送者信息
 struct Pb_UserInfo {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
@@ -371,12 +449,12 @@ extension Pb_PackType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     0: .same(proto: "loginReq"),
     1: .same(proto: "loginAck"),
-    2: .same(proto: "heartbeat"),
-    3: .same(proto: "heartbeatAck"),
-    4: .same(proto: "msgReq"),
-    5: .same(proto: "msgAck"),
-    6: .same(proto: "syncReq"),
-    7: .same(proto: "syncAck"),
+    2: .same(proto: "sessionPull"),
+    3: .same(proto: "sessionPush"),
+    4: .same(proto: "msgPull"),
+    5: .same(proto: "msgPush"),
+    6: .same(proto: "msgReq"),
+    7: .same(proto: "msgAck"),
   ]
 }
 
@@ -437,6 +515,7 @@ extension Pb_LoginReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
   static let protoMessageName: String = _protobuf_package + ".LoginReq"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "token"),
+    2: .same(proto: "deviceId"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -446,6 +525,7 @@ extension Pb_LoginReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.token) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
       default: break
       }
     }
@@ -455,11 +535,15 @@ extension Pb_LoginReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
     if !self.token.isEmpty {
       try visitor.visitSingularStringField(value: self.token, fieldNumber: 1)
     }
+    if !self.deviceID.isEmpty {
+      try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 2)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Pb_LoginReq, rhs: Pb_LoginReq) -> Bool {
     if lhs.token != rhs.token {return false}
+    if lhs.deviceID != rhs.deviceID {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -588,6 +672,170 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     if lhs.sentTime != rhs.sentTime {return false}
     if lhs.content != rhs.content {return false}
     if lhs.status != rhs.status {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Pb_MessagePull: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".MessagePull"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "timestamp"),
+    2: .same(proto: "ascending"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.ascending) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.timestamp != 0 {
+      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 1)
+    }
+    if self.ascending != false {
+      try visitor.visitSingularBoolField(value: self.ascending, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Pb_MessagePull, rhs: Pb_MessagePull) -> Bool {
+    if lhs.timestamp != rhs.timestamp {return false}
+    if lhs.ascending != rhs.ascending {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Pb_MessagePush: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".MessagePush"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "msglist"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.msglist) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.msglist.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.msglist, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Pb_MessagePush, rhs: Pb_MessagePush) -> Bool {
+    if lhs.msglist != rhs.msglist {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Pb_SessionPull: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".SessionPull"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "timestamp"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.timestamp != 0 {
+      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Pb_SessionPull, rhs: Pb_SessionPull) -> Bool {
+    if lhs.timestamp != rhs.timestamp {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Pb_SessionPush: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".SessionPush"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "isOfflineMsg"),
+    2: .same(proto: "isPinned"),
+    3: .same(proto: "sessionId"),
+    4: .same(proto: "timestamp"),
+    5: .same(proto: "unreadCount"),
+    6: .same(proto: "msglist"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularBoolField(value: &self.isOfflineMsg) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.isPinned) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 4: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
+      case 5: try { try decoder.decodeSingularInt64Field(value: &self.unreadCount) }()
+      case 6: try { try decoder.decodeRepeatedMessageField(value: &self.msglist) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.isOfflineMsg != false {
+      try visitor.visitSingularBoolField(value: self.isOfflineMsg, fieldNumber: 1)
+    }
+    if self.isPinned != false {
+      try visitor.visitSingularBoolField(value: self.isPinned, fieldNumber: 2)
+    }
+    if !self.sessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 3)
+    }
+    if self.timestamp != 0 {
+      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 4)
+    }
+    if self.unreadCount != 0 {
+      try visitor.visitSingularInt64Field(value: self.unreadCount, fieldNumber: 5)
+    }
+    if !self.msglist.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.msglist, fieldNumber: 6)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Pb_SessionPush, rhs: Pb_SessionPush) -> Bool {
+    if lhs.isOfflineMsg != rhs.isOfflineMsg {return false}
+    if lhs.isPinned != rhs.isPinned {return false}
+    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs.timestamp != rhs.timestamp {return false}
+    if lhs.unreadCount != rhs.unreadCount {return false}
+    if lhs.msglist != rhs.msglist {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
