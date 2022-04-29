@@ -1,6 +1,6 @@
 module HIMGo
 
-go 1.17
+go 1.18
 
 require (
 	github.com/gobwas/pool v0.2.1

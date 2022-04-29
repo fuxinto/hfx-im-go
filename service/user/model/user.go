@@ -5,10 +5,11 @@ import (
 	"HIMGo/pkg/fxerror"
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
 )
 
 type User struct {
@@ -17,7 +18,7 @@ type User struct {
 	Account  string `gorm:"not null"`
 }
 type Auth struct {
-	baseModel.IdModel
+	gorm.Model
 	Uid        string `gorm:"type:uuid;not null"`
 	LoginType  int    `gorm:"type:smallint;not null"`
 	Identifier string `gorm:"not null"`

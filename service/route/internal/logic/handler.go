@@ -2,6 +2,7 @@ package logic
 
 import (
 	"HIMGo/pkg/pb"
+	"HIMGo/service/gate/gateClient"
 	"HIMGo/service/route/routeClient"
 	"fmt"
 
@@ -37,4 +38,17 @@ func (l *GatePushMsgLogic) Handler(in *routeClient.MessagePushReq) (*routeClient
 		return &routeClient.MessagePushReply{}, fmt.Errorf(str)
 	}
 	return &routeClient.MessagePushReply{}, nil
+}
+
+func (l *GatePushMsgLogic) pushGata(channelId string, body []byte) error {
+	req := &gateClient.MessagePushReq{
+		ChannelId: channelId,
+		Body:      body,
+	}
+	_, err := l.svcCtx.GateRpc.RoutePushMsg(l.ctx, req)
+	if err != nil {
+		logx.Errorf("pushGate失败，channelId:", channelId)
+		return err
+	}
+	return nil
 }

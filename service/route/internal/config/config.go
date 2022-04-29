@@ -13,4 +13,10 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
+	PostgreSQLConf PostgreSQLConf
+}
+
+type PostgreSQLConf struct {
+	Tablename  string
+	DataSource string
 }

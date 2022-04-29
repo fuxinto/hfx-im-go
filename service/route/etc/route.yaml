@@ -6,6 +6,11 @@ Etcd:
     - :2379
   Key: route.rpc
 
+PostgreSQLConf:
+  DataSource: 'host=124.71.100.133 user=fuxinto password=hfx950820 dbname=him port=5432 sslmode=disable TimeZone=Asia/Shanghai'
+  Tablename: him
+
+  
 RedisConf:
   - Host: 124.71.100.133:6379
     Type: node
@@ -20,3 +25,5 @@ GateRpcConf:
 AuthConf:
   AccessSecret: uOvKLmVfztaXGpNYd4Z0I1SiT7MweJhl
   AccessExpire: 86400
+
+  

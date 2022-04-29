@@ -1,7 +1,6 @@
 package socket
 
 import (
-	"HIMGo/pkg/pb"
 	"HIMGo/service/route/route"
 	"context"
 
@@ -9,7 +8,6 @@ import (
 
 	"time"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/segmentio/ksuid"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -40,7 +38,6 @@ func (h *Handler) Accept(conn Conn, timeout time.Duration) (string, Meta, error)
 	if err2 := h.rpcPush(id, payload); err2 != nil {
 		return "", nil, fmt.Errorf("read Not LoginReq")
 	}
-
 	return id, nil, nil
 }
 
@@ -62,34 +59,16 @@ func (h *Handler) rpcPush(id string, data []byte) error {
 // Receive default listener
 func (h *Handler) Receive(ag Agent, payload []byte) {
 
-	pack := pb.Pack{}
-	err := proto.Unmarshal(payload, &pack)
+	// pack := pb.Pack{}
+	// err := proto.Unmarshal(payload, &pack)
+	// if err != nil {
+	// 	logx.Error("proto解析失败")
+	// }
+
+	err := h.rpcPush(ag.ID(), payload)
 	if err != nil {
-		logx.Error("proto解析失败")
+		logx.Errorf("rpc push Route消息失败", err)
 	}
-
-	switch pack.Type {
-	case pb.PackType_heartbeat:
-		logx.Info("收到心跳")
-		pkt := &pb.Pack{Type: pb.PackType_heartbeatAck}
-		data, err := proto.Marshal(pkt)
-		if err != nil {
-			logx.Errorf("心跳消息编码", err)
-			return
-		} else {
-
-		}
-		err = ag.Push(data)
-		if err != nil {
-			logx.Errorf("心跳消息发送", err)
-		}
-	default:
-		err1 := h.rpcPush(ag.ID(), payload)
-		if err1 != nil {
-			logx.Errorf("rpc push Route消息失败", err)
-		}
-	}
-
 }
 
 // Disconnect default listener

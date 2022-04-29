@@ -13,10 +13,11 @@ message MessagePushReq{
   bytes   message = 2;
 }
 message MessagePushReply{
-
+   bytes   body = 1;
 }
 
 
 service route {
   rpc GatePushMsg(MessagePushReq) returns(MessagePushReply);
+ 
 }

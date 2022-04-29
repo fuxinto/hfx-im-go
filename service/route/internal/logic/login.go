@@ -4,7 +4,7 @@ import (
 	"HIMGo/pkg/fxerror"
 	"HIMGo/pkg/jwtx"
 	"HIMGo/pkg/pb"
-	"HIMGo/service/gate/gateClient"
+
 	"HIMGo/service/route/routeClient"
 
 	"errors"
@@ -29,12 +29,13 @@ func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeCl
 	var cid string
 	err = l.svcCtx.Cache.Get(uid, &cid)
 	if err != nil {
-		if !errors.Is(err, fxerror.RedisNotFound) {
-			return &routeClient.MessagePushReply{}, err
-		}
 		//uid key不存在，登录操作
-		l.svcCtx.Cache.Set(uid, channelId)
-		return &routeClient.MessagePushReply{}, nil
+		if errors.Is(err, fxerror.RedisNotFound) {
+			l.svcCtx.Cache.Set(uid, channelId)
+			return &routeClient.MessagePushReply{}, nil
+
+		}
+		return &routeClient.MessagePushReply{}, err
 	}
 
 	//已有登录，挤下线
@@ -66,17 +67,4 @@ func (l *GatePushMsgLogic) logout(uid, channelId string) {
 	} else {
 		l.pushGata(channelId, body)
 	}
-}
-
-func (l *GatePushMsgLogic) pushGata(channelId string, body []byte) error {
-	req := &gateClient.MessagePushReq{
-		ChannelId: channelId,
-		Body:      body,
-	}
-	_, err := l.svcCtx.GateRpc.RoutePushMsg(l.ctx, req)
-	if err != nil {
-		logx.Errorf("pushGate失败，channelId:", channelId)
-		return err
-	}
-	return nil
 }

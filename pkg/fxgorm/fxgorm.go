@@ -1,19 +1,23 @@
-package svc
+package fxgorm
 
 import (
+	model2 "HIMGo/service/route/model"
 	"HIMGo/service/user/model"
+	"log"
+	"time"
+
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"log"
-	"time"
 )
 
 func pgSqlTables(db *gorm.DB) {
 	err := db.AutoMigrate(
 		model.User{},
 		model.Auth{},
+		model2.Session{},
+		model2.Message{},
 	)
 	if err != nil {
 		log.Fatal("创建表失败")
