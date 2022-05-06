@@ -13,18 +13,28 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeClient.MessagePushReply, error) {
+func (l *GatePushMsgLogic) newPack(code int32, msg, userId string, err error) (*routeClient.RouteReply, error) {
+	loginAck := pb.LoginAck{Code: code, Msg: msg, UserId: userId}
+	data, err1 := pb.NewFrom(pb.PackType_loginAck, &loginAck)
+	if err1 != nil {
+		return &routeClient.RouteReply{}, err1
+	}
+	return &routeClient.RouteReply{Body: data}, err
+}
+
+func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeClient.RouteReply, error) {
 	signin := pb.LoginReq{}
 	err := proto.Unmarshal(body, &signin)
 	if err != nil {
-		logx.Error("登录请求解析失败")
+		errx := errors.New("登录请求proto解析失败" + err.Error())
+		logx.Error(errx.Error())
+		return l.newPack(20002, "其它错误", "", errx)
 	}
-
 	//解析token获取uid
 	uid, err := jwtx.GetUidWithToken(signin.Token, l.svcCtx.Config.AuthConf.AccessSecret)
 	if err != nil {
-		logx.Errorf("token:", signin.Token, "解析错误:", err)
-		return &routeClient.MessagePushReply{}, err
+
+		return l.newPack(20001, "token错误", "", err)
 	}
 	var cid string
 	err = l.svcCtx.Cache.Get(uid, &cid)
@@ -32,10 +42,9 @@ func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeCl
 		//uid key不存在，登录操作
 		if errors.Is(err, fxerror.RedisNotFound) {
 			l.svcCtx.Cache.Set(uid, channelId)
-			return &routeClient.MessagePushReply{}, nil
-
+			return l.newPack(20000, "登录成功", uid, nil)
 		}
-		return &routeClient.MessagePushReply{}, err
+		return l.newPack(20002, "其它错误", "", err)
 	}
 
 	//已有登录，挤下线
@@ -45,10 +54,11 @@ func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeCl
 	//}
 	err = l.svcCtx.Cache.Set(uid, channelId)
 	if err != nil {
-		logx.Errorf("redis设置uid key失败：", err)
-		return &routeClient.MessagePushReply{}, err
+		errx := errors.New("redis设置uid key失败：" + err.Error())
+		logx.Error(errx.Error())
+		return l.newPack(20002, "其它错误", "", errx)
 	}
-	return &routeClient.MessagePushReply{}, nil
+	return l.newPack(20000, "登录成功", uid, nil)
 	//ack := pb.LoginAck{}
 	//ack.Code = int32(200)
 	//ack.UserId = "str"

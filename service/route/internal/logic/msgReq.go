@@ -12,14 +12,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (l *GatePushMsgLogic) MsgReqHandler(body []byte, channelId string) (*routeClient.MessagePushReply, error) {
+func (l *GatePushMsgLogic) MsgReqHandler(body []byte, channelId string) (*routeClient.RouteReply, error) {
 	msg := pb.Message{}
 	err := proto.Unmarshal(body, &msg)
 	if err != nil {
 		logx.Error("msg请求解析失败")
 	}
 	l.msgSendHander(msg)
-	return &routeClient.MessagePushReply{}, nil
+	return &routeClient.RouteReply{}, nil
 
 	//ack := pb.LoginAck{}
 	//ack.Code = int32(200)

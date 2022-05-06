@@ -5,19 +5,14 @@ package routeClient;
 
 option go_package = "./routeClient";
 
-
-
-
-message MessagePushReq{
+message GateReq{
   string  channelId = 1;
   bytes   message = 2;
 }
-message MessagePushReply{
-   bytes   body = 1;
+message RouteReply{ 
+  bytes   body = 1;
 }
 
-
 service route {
-  rpc GatePushMsg(MessagePushReq) returns(MessagePushReply);
- 
+  rpc GatePushMsg(GateReq) returns(RouteReply);
 }

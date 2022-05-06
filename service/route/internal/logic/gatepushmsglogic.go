@@ -21,7 +21,7 @@ func NewGatePushMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GateP
 	}
 }
 
-func (l *GatePushMsgLogic) GatePushMsg(in *routeClient.MessagePushReq) (*routeClient.MessagePushReply, error) {
+func (l *GatePushMsgLogic) GatePushMsg(in *routeClient.GateReq) (*routeClient.RouteReply, error) {
 	// todo: add your logic here and delete this line
 
 	return l.Handler(in)

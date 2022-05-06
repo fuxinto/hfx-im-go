@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RouteClient interface {
-	GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error)
+	GatePushMsg(ctx context.Context, in *GateReq, opts ...grpc.CallOption) (*RouteReply, error)
 }
 
 type routeClient struct {
@@ -33,8 +33,8 @@ func NewRouteClient(cc grpc.ClientConnInterface) RouteClient {
 	return &routeClient{cc}
 }
 
-func (c *routeClient) GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error) {
-	out := new(MessagePushReply)
+func (c *routeClient) GatePushMsg(ctx context.Context, in *GateReq, opts ...grpc.CallOption) (*RouteReply, error) {
+	out := new(RouteReply)
 	err := c.cc.Invoke(ctx, "/routeClient.route/GatePushMsg", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c *routeClient) GatePushMsg(ctx context.Context, in *MessagePushReq, opts 
 // All implementations must embed UnimplementedRouteServer
 // for forward compatibility
 type RouteServer interface {
-	GatePushMsg(context.Context, *MessagePushReq) (*MessagePushReply, error)
+	GatePushMsg(context.Context, *GateReq) (*RouteReply, error)
 	mustEmbedUnimplementedRouteServer()
 }
 
@@ -54,7 +54,7 @@ type RouteServer interface {
 type UnimplementedRouteServer struct {
 }
 
-func (UnimplementedRouteServer) GatePushMsg(context.Context, *MessagePushReq) (*MessagePushReply, error) {
+func (UnimplementedRouteServer) GatePushMsg(context.Context, *GateReq) (*RouteReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatePushMsg not implemented")
 }
 func (UnimplementedRouteServer) mustEmbedUnimplementedRouteServer() {}
@@ -71,7 +71,7 @@ func RegisterRouteServer(s grpc.ServiceRegistrar, srv RouteServer) {
 }
 
 func _Route_GatePushMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MessagePushReq)
+	in := new(GateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func _Route_GatePushMsg_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/routeClient.route/GatePushMsg",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RouteServer).GatePushMsg(ctx, req.(*MessagePushReq))
+		return srv.(RouteServer).GatePushMsg(ctx, req.(*GateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

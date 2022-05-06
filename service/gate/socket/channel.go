@@ -13,7 +13,7 @@ import (
 type ChannelImpl struct {
 	id string
 	Conn
-	meta      Meta
+	// meta      Meta
 	writechan chan []byte
 	writeWait time.Duration
 	readwait  time.Duration
@@ -22,11 +22,11 @@ type ChannelImpl struct {
 }
 
 // NewChannel NewChannel
-func NewChannel(id string, meta Meta, conn Conn, gpool *ants.Pool) Channel {
+func NewChannel(id string, conn Conn, gpool *ants.Pool) Channel {
 	ch := &ChannelImpl{
-		id:        id,
-		Conn:      conn,
-		meta:      meta,
+		id:   id,
+		Conn: conn,
+		// meta:      meta,
 		writechan: make(chan []byte, 5),
 		writeWait: DefaultWriteWait, //default value
 		readwait:  DefaultReadWait,
@@ -149,4 +149,4 @@ func (ch *ChannelImpl) Readloop(lst MessageListener) error {
 	}
 }
 
-func (ch *ChannelImpl) GetMeta() Meta { return ch.meta }
+// func (ch *ChannelImpl) GetMeta() Meta { return ch.meta }

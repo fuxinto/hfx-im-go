@@ -13,11 +13,11 @@ import (
 )
 
 type (
-	MessagePushReply = routeClient.MessagePushReply
-	MessagePushReq   = routeClient.MessagePushReq
+	GateReq    = routeClient.GateReq
+	RouteReply = routeClient.RouteReply
 
 	Route interface {
-		GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error)
+		GatePushMsg(ctx context.Context, in *GateReq, opts ...grpc.CallOption) (*RouteReply, error)
 	}
 
 	defaultRoute struct {
@@ -31,7 +31,7 @@ func NewRoute(cli zrpc.Client) Route {
 	}
 }
 
-func (m *defaultRoute) GatePushMsg(ctx context.Context, in *MessagePushReq, opts ...grpc.CallOption) (*MessagePushReply, error) {
+func (m *defaultRoute) GatePushMsg(ctx context.Context, in *GateReq, opts ...grpc.CallOption) (*RouteReply, error) {
 	client := routeClient.NewRouteClient(m.cli.Conn())
 	return client.GatePushMsg(ctx, in, opts...)
 }

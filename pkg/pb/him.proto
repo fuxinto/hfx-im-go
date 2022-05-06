@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package pb;
-option go_package = "./pb";
+option go_package = "pkg/pb;pb";
 //消息状态
 enum MessageStatus {
 	init = 0;
@@ -53,24 +53,28 @@ message LoginAck{
 	string userId = 3;
 }
 message Message{
-	//会话类型
-	SessionType  sessionType = 1;
 	//消息类型
-	ElemType type = 2;
+	ElemType type = 1;
 	//消息发送者
-	UserInfo sender = 3;
+	string sender = 2;
+	//消息发送者昵称
+	string nickName = 3;
+	//消息发送者头像
+	string faceURL = 4;
 	//消息接收者id
-	string targetId = 4;
+	string targetId = 5;
 	//app端消息id
-	string messageId = 5;
+	string msgID = 6;
 	//全局唯一id
-	string messageUid = 6;
+	string msgUid = 7;
 	//消息发送时间
-	int64 sentTime = 7;
+	int64 timestamp = 8;
 	//消息内容
-	string content = 8;
+	string content = 9;
 	//消息状态
-	MessageStatus status = 9;
+	MessageStatus status = 10;
+	//消息自定义数据
+	bytes cloudCustomData = 11;
 }
 
 //消息拉取
@@ -90,7 +94,12 @@ message SessionPull{
 }
 //会话列表推
 message SessionPush{
-	//是否有离线消息
+	repeated Session sessionList = 1;
+}
+
+//会话列表
+message Session{
+//是否有离线消息
 	bool isOfflineMsg = 1;
 	//是否置顶
 	bool isPinned = 2;
@@ -102,8 +111,9 @@ message SessionPush{
 	int64 unreadCount = 5;
 	//最新消息条数，一页20条
 	repeated  Message msglist = 6;
+	//会话类型
+	SessionType type = 7;
 }
-
 
 //消息发送者信息
 message UserInfo{

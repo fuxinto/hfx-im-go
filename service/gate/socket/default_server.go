@@ -2,11 +2,11 @@ package socket
 
 import (
 	"HIMGo/pkg/fxlog"
-	"HIMGo/pkg/pb"
 	"bufio"
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/panjf2000/ants/v2"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,7 +18,6 @@ import (
 
 	"github.com/gobwas/pool/pbufio"
 	"github.com/gobwas/ws"
-	"github.com/segmentio/ksuid"
 )
 
 type Upgrader interface {
@@ -86,7 +85,7 @@ func NewServer(listen string, upgrader Upgrader, options ...ServerOption) *Defau
 func (s *DefaultServer) Start() error {
 
 	if s.Acceptor == nil {
-		s.Acceptor = &defaultAcceptor{}
+		log.Panic("s.Acceptor == nil")
 	}
 	if s.StateListener == nil {
 		return fmt.Errorf("StateListener is nil")
@@ -138,22 +137,11 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 		rawconn.Close()
 		return
 	}
-	id, meta, err := s.Accept(conn, s.options.Loginwait)
+	id, data, err := s.Accept(conn, s.options.Loginwait)
 	if err != nil {
-		data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 50000, Msg: err.Error()})
-		if err != nil {
-			logx.Errorf("protobuf编码失败")
-			// _ = conn.WriteFrame([]byte(err.Error()))
-		} else {
+		if data != nil {
 			conn.WriteFrame(data)
 		}
-		conn.Close()
-		return
-	}
-	data, err := pb.NewFrom(pb.PackType_loginAck, &pb.LoginAck{Code: 200, Msg: "登录成功", UserId: "52969eb5-a1e4-4917-a4ea-97b25d07f1c7"})
-	if err != nil {
-		logx.Errorf("登录错误", err)
-		_ = conn.WriteFrame([]byte(err.Error()))
 		conn.Close()
 		return
 	}
@@ -163,10 +151,10 @@ func (s *DefaultServer) connHandler(rawconn net.Conn, gpool *ants.Pool) {
 		conn.Close()
 		return
 	}
-	if meta == nil {
-		meta = Meta{}
-	}
-	channel := NewChannel(id, meta, conn, gpool)
+	// if meta == nil {
+	// 	meta = Meta{}
+	// }
+	channel := NewChannel(id, conn, gpool)
 
 	channel.SetReadWait(s.options.Readwait)
 	channel.SetWriteWait(s.options.Writewait)
@@ -250,7 +238,7 @@ func (s *DefaultServer) SetReadWait(Readwait time.Duration) {
 type defaultAcceptor struct {
 }
 
-// Accept defaultAcceptor
-func (a *defaultAcceptor) Accept(conn Conn, timeout time.Duration) (string, Meta, error) {
-	return ksuid.New().String(), Meta{}, nil
-}
+// // Accept defaultAcceptor
+// func (a *defaultAcceptor) Accept(conn Conn, timeout time.Duration) (string, Meta, error) {
+// 	return ksuid.New().String(), Meta{}, nil
+// }

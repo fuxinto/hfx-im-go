@@ -24,7 +24,7 @@ type Handler struct {
 }
 
 // Accept this connection
-func (h *Handler) Accept(conn Conn, timeout time.Duration) (string, Meta, error) {
+func (h *Handler) Accept(conn Conn, timeout time.Duration) (string, []byte, error) {
 
 	// 1. 读取登录包
 	_ = conn.SetReadDeadline(time.Now().Add(time.Second * 10))
@@ -34,40 +34,31 @@ func (h *Handler) Accept(conn Conn, timeout time.Duration) (string, Meta, error)
 	}
 
 	id := generateChannelID(h.ServiceID)
-
-	if err2 := h.rpcPush(id, payload); err2 != nil {
-		return "", nil, fmt.Errorf("read Not LoginReq")
-	}
-	return id, nil, nil
+	data, err2 := h.rpcPush(id, payload)
+	return id, data, err2
 }
 
 func generateChannelID(serviceID string) string {
 	return fmt.Sprintf("%s:%s", serviceID, ksuid.New().String())
 }
 
-func (h *Handler) rpcPush(id string, data []byte) error {
-	req := &route.MessagePushReq{
+func (h *Handler) rpcPush(id string, data []byte) ([]byte, error) {
+	req := &route.GateReq{
 		ChannelId: id,
 		Message:   data,
 	}
-	if _, err2 := h.RouteRpc.GatePushMsg(context.TODO(), req); err2 != nil {
-		return err2
-	}
-	return nil
+	reply, err := h.RouteRpc.GatePushMsg(context.TODO(), req)
+	return reply.Body, err
 }
 
 // Receive default listener
 func (h *Handler) Receive(ag Agent, payload []byte) {
 
-	// pack := pb.Pack{}
-	// err := proto.Unmarshal(payload, &pack)
-	// if err != nil {
-	// 	logx.Error("proto解析失败")
-	// }
-
-	err := h.rpcPush(ag.ID(), payload)
+	data, err := h.rpcPush(ag.ID(), payload)
 	if err != nil {
 		logx.Errorf("rpc push Route消息失败", err)
+	} else if data != nil {
+		ag.Push(data)
 	}
 }
 

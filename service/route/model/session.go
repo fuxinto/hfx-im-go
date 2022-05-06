@@ -17,6 +17,8 @@ type Session struct {
 	Timestamp int64 `gorm:"index:idx_session;not null"`
 	//未读消息数，实时计算
 	// UnreadCount int64 `gorm:"default:0"`
+	//最新的20条消息
+	LatestMsg []Message `gorm:"-"`
 }
 
 type SessionModel struct {

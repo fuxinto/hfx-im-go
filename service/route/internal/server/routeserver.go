@@ -22,7 +22,7 @@ func NewRouteServer(svcCtx *svc.ServiceContext) *RouteServer {
 	}
 }
 
-func (s *RouteServer) GatePushMsg(ctx context.Context, in *routeClient.MessagePushReq) (*routeClient.MessagePushReply, error) {
+func (s *RouteServer) GatePushMsg(ctx context.Context, in *routeClient.GateReq) (*routeClient.RouteReply, error) {
 	l := logic.NewGatePushMsgLogic(ctx, s.svcCtx)
 	return l.GatePushMsg(in)
 }
