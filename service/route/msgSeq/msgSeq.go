@@ -3,10 +3,11 @@ package msgSeq
 import (
 	"HIMGo/pkg/transform"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/hash"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/zeromicro/go-zero/core/hash"
 )
 
 var mutex sync.Mutex
@@ -25,8 +26,9 @@ func getMessageSeq() int {
 
 //sessionId会话id
 //sessionType会话类型最大15。
-func GetMsgSeq(sessionId string, sessionType int) string {
-	higBits := int(time.Now().UnixNano() / 1e6)
+func GetMsgSeq(sessionId string, sessionType int) (string, int64) {
+	timestamp := time.Now().UnixNano() / 1e6
+	higBits := int(timestamp)
 	higBits <<= 12
 	higBits |= getMessageSeq()
 	higBits <<= 4
@@ -41,8 +43,9 @@ func GetMsgSeq(sessionId string, sessionType int) string {
 	builder.WriteString(higStr)
 	builder.WriteString(lowStr)
 	str := builder.String()
-	return seqCode(str)
+	return seqCode(str), timestamp
 }
+
 func seqCode(str string) string {
 	var balance [16]string
 	var index = 0

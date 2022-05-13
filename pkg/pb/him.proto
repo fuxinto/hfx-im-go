@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package pb;
-option go_package = "pkg/pb;pb";
+option go_package = "/;pb";
 //消息状态
 enum MessageStatus {
 	init = 0;
@@ -16,14 +16,13 @@ enum MessageStatus {
 enum PackType{
 	loginReq = 0;
 	loginAck = 1;
-	sessionPull = 2;
-	sessionPush = 3;
 	//消息同步当做心跳，可以避免在线情况下因为网络等原因消息未送达，不用等用户下次登录就可以重新推送消息
-	msgPull = 4;
-	msgPush = 5;
+	msgPullReq = 2;
+	msgPullAck = 3;
+	msgHistoryReq = 4;
+	msgHistoryAck = 5;
 	msgReq = 6;
 	msgAck = 7;
-
 }
 //会话类型
 enum SessionType{
@@ -52,79 +51,64 @@ message LoginAck{
 	string msg = 2;
 	string userId = 3;
 }
+
 message Message{
+	//会话类型
+	SessionType sessionType = 13;
 	//消息类型
 	ElemType type = 1;
-	//消息发送者
-	string sender = 2;
-	//消息发送者昵称
-	string nickName = 3;
-	//消息发送者头像
-	string faceURL = 4;
-	//消息接收者id
-	string targetId = 5;
+	//会话id
+	string sessionId = 2;
 	//app端消息id
-	string msgID = 6;
+	string msgID = 3;
 	//全局唯一id
-	string msgUid = 7;
-	//消息发送时间
-	int64 timestamp = 8;
+	string msgUid = 4;
+	//消息状态
+	MessageStatus status = 5;
+	//消息发送者
+	string senderId = 6;
+	//消息发送者昵称
+	string nickName = 7;
+	//消息发送者头像
+	string faceURL = 8;
 	//消息内容
 	string content = 9;
-	//消息状态
-	MessageStatus status = 10;
+	//消息发送时间
+	int64 timestamp = 10;
 	//消息自定义数据
 	bytes cloudCustomData = 11;
 }
-
-//消息拉取
-message MessagePull{
-	int64 timestamp = 1;
-	//升序，获取最新消息，做为心跳包，降序获取历史消息
-	bool ascending = 2;
-}
-//消息推
-message MessagePush{
-	repeated Message msglist = 1;
-}
-//会话列表拉取
-message SessionPull{
-	string userId = 1;
-	int64 timestamp = 2;
-}
-//会话列表推
-message SessionPush{
-	repeated Session sessionList = 1;
-}
-
-//会话列表
-message Session{
-//是否有离线消息
-	bool isOfflineMsg = 1;
-	//是否置顶
-	bool isPinned = 2;
-	//会话id
-	string sessionId = 3;
-	//最后消息时间
-	int64 timestamp = 4;
-	//未读数
-	int64 unreadCount = 5;
-	//最新消息条数，一页20条
-	repeated  Message msglist = 6;
-	//会话类型
-	SessionType type = 7;
-}
-
-//消息发送者信息
-message UserInfo{
-	string userId = 1;
-	string nickName = 2;
-	string avatar = 3;
-}
-
 //消息回执
 message MessageAck{
-	string messageId = 1;
-	string messagedUid = 2;
+	string 	msgId = 1;
+	string 	msgUid = 2;
+	//消息成功200，失败，拉黑，不是好友
+	int32	code =3;
+}
+
+//离线消息拉取
+message MessagePullReq{
+	string  userId = 1;
+	int64 	timestamp = 2;
+}
+
+//离线消息拉取响应
+message MessagePullAck{
+	repeated Message msglist = 1;
+	//剩余消息条数
+	int64 	nLeft = 2;
+}
+//历史消息响应
+message MsgHistoryAck{
+	repeated Message msglist = 1;
+	//是否还有剩余消息
+	bool 	isRemaining = 2;
+}
+//历史消息拉取
+message MsgHistoryReq{
+	string  userId = 1;
+	string  sessionId = 2;
+	int64   count = 3;
+	int64   timestamp = 4;
 }
 

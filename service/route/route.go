@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 
 	"HIMGo/service/route/internal/config"
 	"HIMGo/service/route/internal/server"
 	"HIMGo/service/route/internal/svc"
+	"HIMGo/service/route/model"
 	"HIMGo/service/route/routeClient"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -36,7 +38,7 @@ func main() {
 		}
 	})
 	defer s.Stop()
-	logx.Error("测试")
+
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

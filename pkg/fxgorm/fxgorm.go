@@ -16,8 +16,8 @@ func pgSqlTables(db *gorm.DB) {
 	err := db.AutoMigrate(
 		model.User{},
 		model.Auth{},
-		model2.Session{},
-		model2.Message{},
+		model2.MsgRecord{},
+		model2.MsgSync{},
 	)
 	if err != nil {
 		log.Fatal("创建表失败")

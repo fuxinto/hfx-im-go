@@ -28,9 +28,9 @@ func (l *GatePushMsgLogic) Handler(in *routeClient.GateReq) (*routeClient.RouteR
 		l.LoginHandler(pack.Body, in.ChannelId)
 	case pb.PackType_msgReq:
 		l.MsgReqHandler(pack.Body, in.ChannelId)
-	case pb.PackType_sessionPull:
-		l.SessionPullHandler(pack.Body, in.ChannelId)
-	case pb.PackType_msgPull:
+	// case pb.PackType_sessionPull:
+	// l.SessionPullHandler(pack.Body, in.ChannelId)
+	case pb.PackType_msgPullReq:
 		l.MsgPullHandler(pack.Body, in.ChannelId)
 
 	default:
