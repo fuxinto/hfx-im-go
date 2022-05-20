@@ -33,7 +33,7 @@ func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeCl
 	//解析token获取uid
 	uid, err := jwtx.GetUidWithToken(signin.Token, l.svcCtx.Config.AuthConf.AccessSecret)
 	if err != nil {
-
+		logx.Error(err.Error())
 		return l.newPack(20001, "token错误", "", err)
 	}
 	var cid string
@@ -48,10 +48,8 @@ func (l *GatePushMsgLogic) LoginHandler(body []byte, channelId string) (*routeCl
 	}
 
 	//已有登录，挤下线
-	// go l.logout(uid, channelId)
-	//if err != nil {
-	//	return &routeClient.MessagePushReply{}, err
-	//}
+	go l.logout(uid, channelId)
+
 	err = l.svcCtx.Cache.Set(uid, channelId)
 	if err != nil {
 		errx := errors.New("redis设置uid key失败：" + err.Error())

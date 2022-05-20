@@ -25,7 +25,7 @@ enum PackType{
 	msgAck = 7;
 }
 //会话类型
-enum SessionType{
+enum ConversationType{
 	c2c = 0;
 	group = 1;
 }
@@ -47,18 +47,18 @@ message LoginReq{
 }
 //登录回执
 message LoginAck{
-	int32 code = 1;
+	int32  code = 1;
 	string msg = 2;
 	string userId = 3;
 }
 
 message Message{
 	//会话类型
-	SessionType sessionType = 13;
+	ConversationType conversationType = 13;
 	//消息类型
 	ElemType type = 1;
 	//会话id
-	string sessionId = 2;
+	string conversationId = 2;
 	//app端消息id
 	string msgID = 3;
 	//全局唯一id
@@ -67,17 +67,20 @@ message Message{
 	MessageStatus status = 5;
 	//消息发送者
 	string senderId = 6;
+	//消息接收者
+	string targetId = 7;
 	//消息发送者昵称
-	string nickName = 7;
+	string nickName = 8;
 	//消息发送者头像
-	string faceURL = 8;
+	string faceUrl = 9;
 	//消息内容
-	string content = 9;
+	string content = 10;
 	//消息发送时间
-	int64 timestamp = 10;
+	int64 timestamp = 11;
 	//消息自定义数据
-	bytes cloudCustomData = 11;
+	bytes cloudCustomData = 12;
 }
+
 //消息回执
 message MessageAck{
 	string 	msgId = 1;
@@ -95,19 +98,15 @@ message MessagePullReq{
 //离线消息拉取响应
 message MessagePullAck{
 	repeated Message msglist = 1;
-	//剩余消息条数
-	int64 	nLeft = 2;
 }
-//历史消息响应
+//历史消息响应 
 message MsgHistoryAck{
 	repeated Message msglist = 1;
-	//是否还有剩余消息
-	bool 	isRemaining = 2;
 }
 //历史消息拉取
 message MsgHistoryReq{
 	string  userId = 1;
-	string  sessionId = 2;
+	string  conversationId = 2;
 	int64   count = 3;
 	int64   timestamp = 4;
 }

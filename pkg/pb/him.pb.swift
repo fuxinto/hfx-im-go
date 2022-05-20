@@ -148,7 +148,7 @@ extension Pb_PackType: CaseIterable {
 #endif  // swift(>=4.2)
 
 ///会话类型
-enum Pb_SessionType: SwiftProtobuf.Enum {
+enum Pb_ConversationType: SwiftProtobuf.Enum {
   typealias RawValue = Int
   case c2C // = 0
   case group // = 1
@@ -178,9 +178,9 @@ enum Pb_SessionType: SwiftProtobuf.Enum {
 
 #if swift(>=4.2)
 
-extension Pb_SessionType: CaseIterable {
+extension Pb_ConversationType: CaseIterable {
   // The compiler won't synthesize support with the UNRECOGNIZED case.
-  static var allCases: [Pb_SessionType] = [
+  static var allCases: [Pb_ConversationType] = [
     .c2C,
     .group,
   ]
@@ -286,13 +286,13 @@ struct Pb_Message {
   // methods supported on all messages.
 
   ///会话类型
-  var sessionType: Pb_SessionType = .c2C
+  var conversationType: Pb_ConversationType = .c2C
 
   ///消息类型
   var type: Pb_ElemType = .custom
 
   ///会话id
-  var sessionID: String = String()
+  var conversationID: String = String()
 
   ///app端消息id
   var msgID: String = String()
@@ -305,6 +305,9 @@ struct Pb_Message {
 
   ///消息发送者
   var senderID: String = String()
+
+  ///消息接收者
+  var targetID: String = String()
 
   ///消息发送者昵称
   var nickName: String = String()
@@ -367,24 +370,18 @@ struct Pb_MessagePullAck {
 
   var msglist: [Pb_Message] = []
 
-  ///剩余消息条数
-  var nLeft: Int64 = 0
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 }
 
-///历史消息响应
+///历史消息响应 
 struct Pb_MsgHistoryAck {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
   var msglist: [Pb_Message] = []
-
-  ///是否还有剩余消息
-  var isRemaining: Bool = false
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -399,7 +396,7 @@ struct Pb_MsgHistoryReq {
 
   var userID: String = String()
 
-  var sessionID: String = String()
+  var conversationID: String = String()
 
   var count: Int64 = 0
 
@@ -439,7 +436,7 @@ extension Pb_PackType: SwiftProtobuf._ProtoNameProviding {
   ]
 }
 
-extension Pb_SessionType: SwiftProtobuf._ProtoNameProviding {
+extension Pb_ConversationType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     0: .same(proto: "c2c"),
     1: .same(proto: "group"),
@@ -577,18 +574,19 @@ extension Pb_LoginAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
 extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Message"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    13: .same(proto: "sessionType"),
+    13: .same(proto: "conversationType"),
     1: .same(proto: "type"),
-    2: .same(proto: "sessionId"),
+    2: .same(proto: "conversationId"),
     3: .same(proto: "msgID"),
     4: .same(proto: "msgUid"),
     5: .same(proto: "status"),
     6: .same(proto: "senderId"),
-    7: .same(proto: "nickName"),
-    8: .same(proto: "faceURL"),
-    9: .same(proto: "content"),
-    10: .same(proto: "timestamp"),
-    11: .same(proto: "cloudCustomData"),
+    7: .same(proto: "targetId"),
+    8: .same(proto: "nickName"),
+    9: .same(proto: "faceUrl"),
+    10: .same(proto: "content"),
+    11: .same(proto: "timestamp"),
+    12: .same(proto: "cloudCustomData"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -598,17 +596,18 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularEnumField(value: &self.type) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.conversationID) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.msgID) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.msgUid) }()
       case 5: try { try decoder.decodeSingularEnumField(value: &self.status) }()
       case 6: try { try decoder.decodeSingularStringField(value: &self.senderID) }()
-      case 7: try { try decoder.decodeSingularStringField(value: &self.nickName) }()
-      case 8: try { try decoder.decodeSingularStringField(value: &self.faceURL) }()
-      case 9: try { try decoder.decodeSingularStringField(value: &self.content) }()
-      case 10: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
-      case 11: try { try decoder.decodeSingularBytesField(value: &self.cloudCustomData) }()
-      case 13: try { try decoder.decodeSingularEnumField(value: &self.sessionType) }()
+      case 7: try { try decoder.decodeSingularStringField(value: &self.targetID) }()
+      case 8: try { try decoder.decodeSingularStringField(value: &self.nickName) }()
+      case 9: try { try decoder.decodeSingularStringField(value: &self.faceURL) }()
+      case 10: try { try decoder.decodeSingularStringField(value: &self.content) }()
+      case 11: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
+      case 12: try { try decoder.decodeSingularBytesField(value: &self.cloudCustomData) }()
+      case 13: try { try decoder.decodeSingularEnumField(value: &self.conversationType) }()
       default: break
       }
     }
@@ -618,8 +617,8 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     if self.type != .custom {
       try visitor.visitSingularEnumField(value: self.type, fieldNumber: 1)
     }
-    if !self.sessionID.isEmpty {
-      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 2)
+    if !self.conversationID.isEmpty {
+      try visitor.visitSingularStringField(value: self.conversationID, fieldNumber: 2)
     }
     if !self.msgID.isEmpty {
       try visitor.visitSingularStringField(value: self.msgID, fieldNumber: 3)
@@ -633,35 +632,39 @@ extension Pb_Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
     if !self.senderID.isEmpty {
       try visitor.visitSingularStringField(value: self.senderID, fieldNumber: 6)
     }
+    if !self.targetID.isEmpty {
+      try visitor.visitSingularStringField(value: self.targetID, fieldNumber: 7)
+    }
     if !self.nickName.isEmpty {
-      try visitor.visitSingularStringField(value: self.nickName, fieldNumber: 7)
+      try visitor.visitSingularStringField(value: self.nickName, fieldNumber: 8)
     }
     if !self.faceURL.isEmpty {
-      try visitor.visitSingularStringField(value: self.faceURL, fieldNumber: 8)
+      try visitor.visitSingularStringField(value: self.faceURL, fieldNumber: 9)
     }
     if !self.content.isEmpty {
-      try visitor.visitSingularStringField(value: self.content, fieldNumber: 9)
+      try visitor.visitSingularStringField(value: self.content, fieldNumber: 10)
     }
     if self.timestamp != 0 {
-      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 10)
+      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 11)
     }
     if !self.cloudCustomData.isEmpty {
-      try visitor.visitSingularBytesField(value: self.cloudCustomData, fieldNumber: 11)
+      try visitor.visitSingularBytesField(value: self.cloudCustomData, fieldNumber: 12)
     }
-    if self.sessionType != .c2C {
-      try visitor.visitSingularEnumField(value: self.sessionType, fieldNumber: 13)
+    if self.conversationType != .c2C {
+      try visitor.visitSingularEnumField(value: self.conversationType, fieldNumber: 13)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Pb_Message, rhs: Pb_Message) -> Bool {
-    if lhs.sessionType != rhs.sessionType {return false}
+    if lhs.conversationType != rhs.conversationType {return false}
     if lhs.type != rhs.type {return false}
-    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs.conversationID != rhs.conversationID {return false}
     if lhs.msgID != rhs.msgID {return false}
     if lhs.msgUid != rhs.msgUid {return false}
     if lhs.status != rhs.status {return false}
     if lhs.senderID != rhs.senderID {return false}
+    if lhs.targetID != rhs.targetID {return false}
     if lhs.nickName != rhs.nickName {return false}
     if lhs.faceURL != rhs.faceURL {return false}
     if lhs.content != rhs.content {return false}
@@ -758,7 +761,6 @@ extension Pb_MessagePullAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
   static let protoMessageName: String = _protobuf_package + ".MessagePullAck"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "msglist"),
-    2: .same(proto: "nLeft"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -768,7 +770,6 @@ extension Pb_MessagePullAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeRepeatedMessageField(value: &self.msglist) }()
-      case 2: try { try decoder.decodeSingularInt64Field(value: &self.nLeft) }()
       default: break
       }
     }
@@ -778,15 +779,11 @@ extension Pb_MessagePullAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     if !self.msglist.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.msglist, fieldNumber: 1)
     }
-    if self.nLeft != 0 {
-      try visitor.visitSingularInt64Field(value: self.nLeft, fieldNumber: 2)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Pb_MessagePullAck, rhs: Pb_MessagePullAck) -> Bool {
     if lhs.msglist != rhs.msglist {return false}
-    if lhs.nLeft != rhs.nLeft {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -796,7 +793,6 @@ extension Pb_MsgHistoryAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   static let protoMessageName: String = _protobuf_package + ".MsgHistoryAck"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "msglist"),
-    2: .same(proto: "isRemaining"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -806,7 +802,6 @@ extension Pb_MsgHistoryAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeRepeatedMessageField(value: &self.msglist) }()
-      case 2: try { try decoder.decodeSingularBoolField(value: &self.isRemaining) }()
       default: break
       }
     }
@@ -816,15 +811,11 @@ extension Pb_MsgHistoryAck: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     if !self.msglist.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.msglist, fieldNumber: 1)
     }
-    if self.isRemaining != false {
-      try visitor.visitSingularBoolField(value: self.isRemaining, fieldNumber: 2)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Pb_MsgHistoryAck, rhs: Pb_MsgHistoryAck) -> Bool {
     if lhs.msglist != rhs.msglist {return false}
-    if lhs.isRemaining != rhs.isRemaining {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -834,7 +825,7 @@ extension Pb_MsgHistoryReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   static let protoMessageName: String = _protobuf_package + ".MsgHistoryReq"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "userId"),
-    2: .same(proto: "sessionId"),
+    2: .same(proto: "conversationId"),
     3: .same(proto: "count"),
     4: .same(proto: "timestamp"),
   ]
@@ -846,7 +837,7 @@ extension Pb_MsgHistoryReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.userID) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.conversationID) }()
       case 3: try { try decoder.decodeSingularInt64Field(value: &self.count) }()
       case 4: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
       default: break
@@ -858,8 +849,8 @@ extension Pb_MsgHistoryReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     if !self.userID.isEmpty {
       try visitor.visitSingularStringField(value: self.userID, fieldNumber: 1)
     }
-    if !self.sessionID.isEmpty {
-      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 2)
+    if !self.conversationID.isEmpty {
+      try visitor.visitSingularStringField(value: self.conversationID, fieldNumber: 2)
     }
     if self.count != 0 {
       try visitor.visitSingularInt64Field(value: self.count, fieldNumber: 3)
@@ -872,7 +863,7 @@ extension Pb_MsgHistoryReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
 
   static func ==(lhs: Pb_MsgHistoryReq, rhs: Pb_MsgHistoryReq) -> Bool {
     if lhs.userID != rhs.userID {return false}
-    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs.conversationID != rhs.conversationID {return false}
     if lhs.count != rhs.count {return false}
     if lhs.timestamp != rhs.timestamp {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}

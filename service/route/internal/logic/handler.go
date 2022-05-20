@@ -25,18 +25,21 @@ func (l *GatePushMsgLogic) Handler(in *routeClient.GateReq) (*routeClient.RouteR
 
 	switch pack.Type {
 	case pb.PackType_loginReq:
-		l.LoginHandler(pack.Body, in.ChannelId)
+		data, err := l.LoginHandler(pack.Body, in.ChannelId)
+		if err != nil {
+
+		}
+		return data, nil
 	case pb.PackType_msgReq:
 		l.MsgReqHandler(pack.Body, in.ChannelId)
 	// case pb.PackType_sessionPull:
 	// l.SessionPullHandler(pack.Body, in.ChannelId)
 	case pb.PackType_msgPullReq:
 		l.MsgPullHandler(pack.Body, in.ChannelId)
-
 	default:
-		str := fmt.Sprintf("%v未设置处理handler", pack.Type)
-		logx.Error(str)
-		return &routeClient.RouteReply{}, fmt.Errorf(str)
+		err := fmt.Errorf("%v未设置处理handler", pack.Type)
+		logx.Error(err)
+		return &routeClient.RouteReply{}, err
 	}
 	return &routeClient.RouteReply{}, nil
 }
@@ -48,7 +51,6 @@ func (l *GatePushMsgLogic) pushGata(channelId string, body []byte) error {
 	}
 	_, err := l.svcCtx.GateRpc.RoutePushMsg(l.ctx, req)
 	if err != nil {
-		logx.Errorf("pushGate失败，channelId:", channelId)
 		return err
 	}
 	return nil

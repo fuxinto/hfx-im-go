@@ -1,7 +1,10 @@
 package msgSeq
 
 import (
+	"errors"
 	"testing"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func Test(t *testing.T) {
@@ -21,5 +24,7 @@ func Benchmark_Hello(b *testing.B) {
 }
 
 func BenchmarkTest(b *testing.B) {
-
+	s := logx.LogConf{ServiceName: "name", Mode: "console"}
+	logx.MustSetup(s)
+	logx.Error(errors.New("错误处理"))
 }
